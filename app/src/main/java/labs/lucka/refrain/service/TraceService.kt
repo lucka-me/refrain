@@ -202,7 +202,7 @@ class TraceService : Service() {
         return Notification.Builder(this, channelId)
             .setContentTitle(getText(R.string.app_name))
             .setContentText(getString(contentId))
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification)
             .setOngoing(true)
             .build()
     }
