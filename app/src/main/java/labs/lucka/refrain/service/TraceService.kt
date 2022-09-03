@@ -1,12 +1,10 @@
 
 package labs.lucka.refrain.service
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.graphics.drawable.Icon
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
@@ -18,12 +16,17 @@ import androidx.core.location.LocationListenerCompat
 import androidx.core.location.LocationManagerCompat
 import androidx.core.location.LocationRequestCompat
 import androidx.documentfile.provider.DocumentFile
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import labs.lucka.refrain.R
 import labs.lucka.refrain.common.preferences.Keys
 import labs.lucka.refrain.common.preferencesDataStore
 import labs.lucka.refrain.service.appender.FileAppender
+import labs.lucka.refrain.ui.MainActivity
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -43,6 +46,8 @@ class TraceService : Service() {
     companion object {
         private const val channelId = "TraceServiceNotification"
         private const val foregroundNotificationId = 1
+
+        private const val toggleAction = "TraceServiceToggle"
     }
 
     var count: UInt = 0U
@@ -57,6 +62,7 @@ class TraceService : Service() {
     override fun onDestroy() {
         stop()
         stopForeground(STOP_FOREGROUND_REMOVE)
+        job.cancel()
         super.onDestroy()
     }
 
@@ -67,6 +73,7 @@ class TraceService : Service() {
                 channelId, getText(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationChannel.description = getString(R.string.service_foreground_channel_description)
+            notificationChannel.setSound(null, null)
             notificationManager.createNotificationChannel(notificationChannel)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -75,6 +82,10 @@ class TraceService : Service() {
             )
         } else {
             startForeground(foregroundNotificationId, buildNotification())
+        }
+
+        when (intent.action) {
+            toggleAction -> if (tracing) stop() else supervisorScope.launch { start() }
         }
 
         return START_STICKY
@@ -171,6 +182,8 @@ class TraceService : Service() {
     private var accuracyFilter = 0F
     private var appenders = mutableListOf<FileAppender>()
     private val binder = TraceBinder()
+    private val job = SupervisorJob()
+    private val supervisorScope = CoroutineScope(Dispatchers.Main + job)
     private var listeners = mutableListOf<TraceListener>()
 
     private val locationListener = LocationListenerCompat { location ->
@@ -198,10 +211,33 @@ class TraceService : Service() {
     }
 
     private fun buildNotification(): Notification {
-        val contentId = if (tracing) R.string.service_notification_tracing else R.string.service_notification_standby
+        // Open app when tap content
+        val contentPendingIntent = TaskStackBuilder.create(this)
+            .addNextIntent(Intent(this, MainActivity::class.java))
+            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        // Toggle action
+        val toggleAction = Notification.Action.Builder(
+            Icon.createWithResource(
+                this, if (tracing) R.drawable.ic_baseline_stop_24 else R.drawable.ic_baseline_play_arrow_24
+            ),
+            getString(if (tracing) R.string.stop else R.string.start),
+            PendingIntent.getService(
+                this,
+                0,
+                Intent(this, TraceService::class.java).apply { action = toggleAction },
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        )
+            .build()
+
+        val contentTextId = if (tracing) R.string.service_notification_tracing else R.string.service_notification_standby
         return Notification.Builder(this, channelId)
+            .setCategory(Notification.CATEGORY_SERVICE)
             .setContentTitle(getText(R.string.app_name))
-            .setContentText(getString(contentId))
+            .setContentText(getString(contentTextId))
+            .setContentIntent(contentPendingIntent)
+            .addAction(toggleAction)
             .setSmallIcon(R.drawable.ic_notification)
             .setOngoing(true)
             .build()

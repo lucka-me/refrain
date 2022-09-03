@@ -31,7 +31,7 @@ fun TracingStatusCard(tracing: Boolean, onToggle: () -> Unit) {
                 )
                 Icon(
                     if (tracing) Icons.Filled.Stop else Icons.Filled.PlayArrow,
-                    stringResource(if (tracing) R.string.tracing_status_stop else R.string.tracing_status_start),
+                    stringResource(if (tracing) R.string.stop else R.string.start),
                     modifier = Modifier.size(
                         with(LocalDensity.current) { textStyle.fontSize.toDp() }
                     )
