@@ -1,6 +1,5 @@
 package labs.lucka.refrain.ui.card
 
-import android.location.GnssStatus
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -8,12 +7,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.core.location.GnssStatusCompat
 import labs.lucka.refrain.R
 import labs.lucka.refrain.ui.compose.ExpandableCard
 import labs.lucka.refrain.ui.compose.Label
 
 @Composable
-fun SatellitesCard(gnssStatus: GnssStatus?) {
+fun SatellitesCard(gnssStatus: GnssStatusCompat?) {
     if (gnssStatus == null) {
         Card {
             Column(
@@ -48,13 +48,13 @@ fun SatellitesCard(gnssStatus: GnssStatus?) {
             constellationCount.forEach { (constellation, count) ->
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     val nameId = when (constellation) {
-                        GnssStatus.CONSTELLATION_GPS -> R.string.satellites_gps
-                        GnssStatus.CONSTELLATION_SBAS -> R.string.satellites_sbas
-                        GnssStatus.CONSTELLATION_GLONASS -> R.string.satellites_glonass
-                        GnssStatus.CONSTELLATION_QZSS -> R.string.satellites_qzss
-                        GnssStatus.CONSTELLATION_BEIDOU -> R.string.satellites_beidou
-                        GnssStatus.CONSTELLATION_GALILEO -> R.string.satellites_galileo
-                        GnssStatus.CONSTELLATION_IRNSS -> R.string.satellites_irnss
+                        GnssStatusCompat.CONSTELLATION_GPS -> R.string.satellites_gps
+                        GnssStatusCompat.CONSTELLATION_SBAS -> R.string.satellites_sbas
+                        GnssStatusCompat.CONSTELLATION_GLONASS -> R.string.satellites_glonass
+                        GnssStatusCompat.CONSTELLATION_QZSS -> R.string.satellites_qzss
+                        GnssStatusCompat.CONSTELLATION_BEIDOU -> R.string.satellites_beidou
+                        GnssStatusCompat.CONSTELLATION_GALILEO -> R.string.satellites_galileo
+                        GnssStatusCompat.CONSTELLATION_IRNSS -> R.string.satellites_irnss
                         else -> R.string.satellites_unknown
                     }
                     Label(

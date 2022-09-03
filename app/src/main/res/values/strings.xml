@@ -45,7 +45,7 @@
     <string name="output_format_kml">KML</string>
 
     <string name="output_path">Output Path</string>
-    <string name="output_path_description">Output Path</string>
+    <string name="output_path_description">Please selected a folder to where Refrain saves the trace files.</string>
     <string name="output_path_select">Select</string>
     <string name="output_path_change">Change</string>
 
@@ -62,14 +62,14 @@
     <string name="satellites_fixing">Fixing…</string>
     <string name="satellites_fixing_alt">Fixing</string>
     <string name="satellites_total">Total</string>
-    <string name="satellites_gps">Total</string>
-    <string name="satellites_sbas">Total</string>
-    <string name="satellites_glonass">Total</string>
-    <string name="satellites_qzss">Total</string>
-    <string name="satellites_beidou">Total</string>
-    <string name="satellites_galileo">Total</string>
-    <string name="satellites_irnss">Total</string>
-    <string name="satellites_unknown">Total</string>
+    <string name="satellites_gps">GPS</string>
+    <string name="satellites_sbas">SBAS</string>
+    <string name="satellites_glonass">GLONASS</string>
+    <string name="satellites_qzss">QZSS</string>
+    <string name="satellites_beidou">Beidou</string>
+    <string name="satellites_galileo">Galileo</string>
+    <string name="satellites_irnss">IRNSS</string>
+    <string name="satellites_unknown">Unknown</string>
     <string name="satellites_count_description">Count of %1$s satellites</string>
 
     <string name="tracing_status_tracing">Tracing</string>

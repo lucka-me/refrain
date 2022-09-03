@@ -8,13 +8,15 @@ import android.app.Service
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
-import android.location.LocationRequest
 import android.net.Uri
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import androidx.core.content.getSystemService
+import androidx.core.location.LocationListenerCompat
+import androidx.core.location.LocationManagerCompat
+import androidx.core.location.LocationRequestCompat
 import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -67,9 +69,14 @@ class TraceService : Service() {
             notificationChannel.description = getString(R.string.service_foreground_channel_description)
             notificationManager.createNotificationChannel(notificationChannel)
         }
-        startForeground(
-            foregroundNotificationId, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(
+                foregroundNotificationId, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            )
+        } else {
+            startForeground(foregroundNotificationId, buildNotification())
+        }
+
         return START_STICKY
     }
 
@@ -139,15 +146,15 @@ class TraceService : Service() {
         val timeInterval = preferencesDataStore.data.map { it[Keys.interval.time] ?: 0 }.first()
         val distanceInterval = preferencesDataStore.data.map { it[Keys.interval.distance] ?: 0F }.first()
 
-        val locationRequest = LocationRequest.Builder(timeInterval * 1000)
-            .setQuality(LocationRequest.QUALITY_HIGH_ACCURACY)
+        val locationRequest = LocationRequestCompat.Builder(timeInterval * 1000)
+            .setQuality(LocationRequestCompat.QUALITY_HIGH_ACCURACY)
             .setMinUpdateDistanceMeters(distanceInterval)
             .build()
 
         val provider = preferencesDataStore.data.map { it[Keys.provider] ?: LocationManager.GPS_PROVIDER }.first()
 
         try {
-            locationManager.requestLocationUpdates(provider, locationRequest, mainExecutor, locationListener)
+            LocationManagerCompat.requestLocationUpdates(locationManager, provider, locationRequest, mainExecutor, locationListener)
         } catch (e: SecurityException) {
             mainExecutor.execute { notifyStart(false) }
             return
@@ -166,8 +173,8 @@ class TraceService : Service() {
     private val binder = TraceBinder()
     private var listeners = mutableListOf<TraceListener>()
 
-    private val locationListener = LocationListener { location ->
-        if (accuracyFilter > 0 && location.accuracy > accuracyFilter) return@LocationListener
+    private val locationListener = LocationListenerCompat { location ->
+        if (accuracyFilter > 0 && location.accuracy > accuracyFilter) return@LocationListenerCompat
 
         count++
         for (appender in appenders) {

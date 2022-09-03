@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.location.GnssStatus
 import android.location.Location
 import android.location.LocationManager
 import android.os.IBinder
@@ -16,6 +15,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.getSystemService
+import androidx.core.location.GnssStatusCompat
+import androidx.core.location.LocationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
@@ -27,7 +28,7 @@ class RefrainModel : ViewModel() {
         private set
     var ignoringBatteryOptimization: Boolean? by mutableStateOf(null)
         private set
-    var latestGnssStatus: GnssStatus? by mutableStateOf(null)
+    var latestGnssStatus: GnssStatusCompat? by mutableStateOf(null)
         private set
     var latestLocation: Location? by mutableStateOf(null)
         private set
@@ -55,7 +56,7 @@ class RefrainModel : ViewModel() {
         disengageService(context)
         if (updatingGnssStatus) {
             val locationManager = context.getSystemService<LocationManager>() ?: return
-            locationManager.unregisterGnssStatusCallback(gnssStatusCallback)
+            LocationManagerCompat.unregisterGnssStatusCallback(locationManager, gnssStatusCallback)
             updatingGnssStatus = false
         }
     }
@@ -83,8 +84,8 @@ class RefrainModel : ViewModel() {
     private var serviceIntent: Intent? = null
     private var updatingGnssStatus = false
 
-    private val gnssStatusCallback = object: GnssStatus.Callback() {
-        override fun onSatelliteStatusChanged(status: GnssStatus) {
+    private val gnssStatusCallback = object: GnssStatusCompat.Callback() {
+        override fun onSatelliteStatusChanged(status: GnssStatusCompat) {
             super.onSatelliteStatusChanged(status)
             if (status.satelliteCount > 0) {
                 latestGnssStatus = status
@@ -149,7 +150,7 @@ class RefrainModel : ViewModel() {
         if (updatingGnssStatus || !locationPermissionsGranted) return
         val locationManager = context.getSystemService<LocationManager>() ?: return
         try {
-            locationManager.registerGnssStatusCallback(context.mainExecutor, gnssStatusCallback)
+            LocationManagerCompat.registerGnssStatusCallback(locationManager, context.mainExecutor, gnssStatusCallback)
         } catch (e: SecurityException) {
             return
         }
