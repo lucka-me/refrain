@@ -214,7 +214,7 @@ class TraceService : Service() {
         // Open app when tap content
         val contentPendingIntent = TaskStackBuilder.create(this)
             .addNextIntent(Intent(this, MainActivity::class.java))
-            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         // Toggle action
         val toggleAction = Notification.Action.Builder(
