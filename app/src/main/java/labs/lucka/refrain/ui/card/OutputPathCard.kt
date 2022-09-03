@@ -19,6 +19,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import labs.lucka.refrain.R
 import labs.lucka.refrain.common.preferences.Keys
 import labs.lucka.refrain.ui.compose.Label
 import labs.lucka.refrain.ui.compose.rememberPreference
@@ -42,15 +44,16 @@ fun OutputPathCard(mutable: Boolean) {
             verticalArrangement = Arrangement.spacedBy(Constants.ContentSpace)
         ) {
             Label(
-                text = "Output Path",
-                imageVector = Icons.Filled.Folder,
-                imageDescription = "Output Path",
+                stringResource(R.string.output_path),
+                Icons.Filled.Folder,
                 style = MaterialTheme.typography.titleLarge
             )
-            Text(text = path.ifEmpty { "Please selected a folder to where Refrain saves the trace files." })
+            Text(text = path.ifEmpty { stringResource(R.string.output_path_description) })
             if (mutable) {
                 TextButton(onClick = { documentTreeLauncher.launch(Uri.parse(path)) }) {
-                    Text(text = if (path.isEmpty()) "Select" else "Change")
+                    Text(
+                        stringResource(if (path.isEmpty()) R.string.output_path_select else R.string.output_path_change)
+                    )
                 }
             }
         }

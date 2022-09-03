@@ -12,9 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import labs.lucka.refrain.R
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +50,7 @@ fun <T> EditWithDialogField(
         IconButton(onClick = { showingDialog = true }, enabled = mutable) {
             Icon(
                 Icons.Filled.Edit,
-                "Edit",
+                stringResource(R.string.edit),
                 modifier = Modifier.size(with(LocalDensity.current) { LocalTextStyle.current.fontSize.toDp() })
             )
         }
@@ -69,7 +71,7 @@ fun <T> EditWithDialogField(
                     },
                     enabled = valid
                 ) {
-                    Text("Confirm")
+                    Text(stringResource(R.string.confirm))
                 }
             },
             icon = { Icon(imageVector, imageDescription) },

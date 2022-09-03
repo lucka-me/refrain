@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 fun Label(
     text: String,
     imageVector: ImageVector,
-    imageDescription: String,
+    imageDescription: String = text,
     style: TextStyle = MaterialTheme.typography.bodyMedium
 ) {
     Label(imageVector = imageVector, imageDescription = imageDescription, style = style) {

@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
+import labs.lucka.refrain.R
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,12 +26,12 @@ fun TracingStatusCard(tracing: Boolean, onToggle: () -> Unit) {
             ) {
                 val textStyle = MaterialTheme.typography.titleLarge
                 Text(
-                    text = if (tracing) "Tracing" else "Ready",
+                    stringResource(if (tracing) R.string.tracing_status_tracing else R.string.tracing_status_ready),
                     style = textStyle
                 )
                 Icon(
                     if (tracing) Icons.Filled.Stop else Icons.Filled.PlayArrow,
-                    if (tracing) "Stop" else "Start",
+                    stringResource(if (tracing) R.string.tracing_status_stop else R.string.tracing_status_start),
                     modifier = Modifier.size(
                         with(LocalDensity.current) { textStyle.fontSize.toDp() }
                     )

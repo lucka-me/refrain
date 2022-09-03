@@ -64,7 +64,7 @@ class TraceService : Service() {
             val notificationChannel = NotificationChannel(
                 channelId, getText(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT
             )
-            notificationChannel.description = "Trace Service foreground notification"
+            notificationChannel.description = getString(R.string.service_foreground_channel_description)
             notificationManager.createNotificationChannel(notificationChannel)
         }
         startForeground(
@@ -191,10 +191,10 @@ class TraceService : Service() {
     }
 
     private fun buildNotification(): Notification {
-        val content = if (tracing) "Trace Service is tracing." else "Trace Service stands by."
+        val contentId = if (tracing) R.string.service_notification_tracing else R.string.service_notification_standby
         return Notification.Builder(this, channelId)
             .setContentTitle(getText(R.string.app_name))
-            .setContentText(content)
+            .setContentText(getString(contentId))
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setOngoing(true)
             .build()

@@ -17,6 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
+import labs.lucka.refrain.R
 import labs.lucka.refrain.ui.card.Constants
 
 @Composable
@@ -24,7 +26,7 @@ import labs.lucka.refrain.ui.card.Constants
 fun ExpandableCard(
     title: String,
     imageVector: ImageVector,
-    imageDescription: String,
+    imageDescription: String = title,
     alwaysDisplayedContent: @Composable (() -> Unit)? = null,
     collapsableContent: @Composable () -> Unit
 ) {
@@ -46,7 +48,7 @@ fun ExpandableCard(
                 Label(title, imageVector, imageDescription, style = MaterialTheme.typography.titleLarge)
                 Icon(
                     if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                    if (expanded) "Collapse" else "Expand",
+                    stringResource(if (expanded) R.string.collapse else R.string.expand),
                     modifier = Modifier.size(
                         with(LocalDensity.current) { MaterialTheme.typography.titleLarge.fontSize.toDp() }
                     )

@@ -15,8 +15,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import labs.lucka.refrain.R
 import labs.lucka.refrain.common.preferences.Keys
 import labs.lucka.refrain.ui.compose.Label
 import labs.lucka.refrain.ui.compose.rememberPreference
@@ -24,12 +26,12 @@ import labs.lucka.refrain.ui.compose.rememberPreference
 @Composable
 fun ProviderCard(mutable: Boolean) {
     var provider by rememberPreference(Keys.provider, LocationManager.GPS_PROVIDER)
-    data class ProviderData(val name: String, val icon: ImageVector)
+    data class ProviderData(val nameId: Int, val icon: ImageVector)
     val providers = mapOf(
-        LocationManager.GPS_PROVIDER to ProviderData("Satellite", Icons.Filled.SatelliteAlt),
-        LocationManager.FUSED_PROVIDER to ProviderData("Fused", Icons.Filled.Lightbulb),
-        LocationManager.NETWORK_PROVIDER to ProviderData("Network", Icons.Filled.CellTower),
-        LocationManager.PASSIVE_PROVIDER to ProviderData("Passive", Icons.Filled.DarkMode)
+        LocationManager.GPS_PROVIDER to ProviderData(R.string.provider_gps, Icons.Filled.SatelliteAlt),
+        LocationManager.FUSED_PROVIDER to ProviderData(R.string.provider_fused, Icons.Filled.Lightbulb),
+        LocationManager.NETWORK_PROVIDER to ProviderData(R.string.provider_network, Icons.Filled.CellTower),
+        LocationManager.PASSIVE_PROVIDER to ProviderData(R.string.provider_passive, Icons.Filled.DarkMode)
     )
     Card {
         Column(
@@ -40,9 +42,15 @@ fun ProviderCard(mutable: Boolean) {
             verticalArrangement = Arrangement.spacedBy(Constants.ContentSpace)
         ) {
             Label(
-                if (mutable) "Provider" else "Provider: ${providers[provider]?.name ?: "Undefined"}",
+                if (mutable)
+                    stringResource(R.string.provider)
+                else
+                    stringResource(
+                        R.string.provider_by,
+                        stringResource(providers[provider]?.nameId ?: R.string.provider_undefined)
+                    ),
                 if (mutable) Icons.Filled.WifiTethering else providers[provider]?.icon ?: Icons.Filled.QuestionMark,
-                "Location Provider",
+                stringResource(R.string.provider_alt),
                 MaterialTheme.typography.titleLarge
             )
             if (mutable) {
@@ -60,9 +68,8 @@ fun ProviderCard(mutable: Boolean) {
                     ) {
                         RadioButton(selected = provider == pair.key, onClick = null)
                         Label(
-                            text = pair.value.name,
-                            imageVector = pair.value.icon,
-                            imageDescription = pair.value.name,
+                            stringResource(pair.value.nameId),
+                            pair.value.icon,
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }

@@ -1,12 +1,9 @@
 package labs.lucka.refrain.ui.card
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +17,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import labs.lucka.refrain.R
 import labs.lucka.refrain.ui.compose.Label
 
 @Composable
@@ -32,12 +31,11 @@ fun BatteryOptimizationCard() {
             verticalArrangement = Arrangement.spacedBy(Constants.ContentSpace)
         ) {
             Label(
-                text = "Battery Optimization",
-                imageVector = Icons.Filled.BatterySaver,
-                imageDescription = "Battery Optimization",
+                stringResource(R.string.battery_optimization),
+                Icons.Filled.BatterySaver,
                 style = MaterialTheme.typography.titleLarge
             )
-            Text(text = "It's highly recommended to disable battery optimization for Refrain.")
+            Text(stringResource(R.string.battery_optimization_description))
             val context = LocalContext.current
             TextButton(
                 onClick = {
@@ -49,7 +47,7 @@ fun BatteryOptimizationCard() {
                     context.startActivity(intent)
                 }
             ) {
-                Text(text = "Configure")
+                Text(stringResource(R.string.battery_optimization_configure))
             }
         }
     }

@@ -7,7 +7,9 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import labs.lucka.refrain.R
 import labs.lucka.refrain.ui.compose.ExpandableCard
 import labs.lucka.refrain.ui.compose.Label
 
@@ -22,9 +24,9 @@ fun LatestLocationCard(count: UInt, location: Location?) {
                 verticalArrangement = Arrangement.spacedBy(Constants.ContentSpace)
             ) {
                 Label(
-                    text = "Locating...",
+                    text = stringResource(R.string.last_location_locating),
                     imageVector = Icons.Filled.LocationSearching,
-                    imageDescription = "Locating",
+                    imageDescription = stringResource(R.string.last_location_locating_alt),
                     style = MaterialTheme.typography.titleLarge
                 )
             }
@@ -33,9 +35,9 @@ fun LatestLocationCard(count: UInt, location: Location?) {
         ExpandableCard(
             title = "# $count",
             imageVector = Icons.Filled.MyLocation,
-            imageDescription = "Latest Location",
+            imageDescription = stringResource(R.string.last_location),
             alwaysDisplayedContent = {
-                Label(imageVector = Icons.Filled.Place, imageDescription = "Coordinate") {
+                Label(Icons.Filled.Place, stringResource(R.string.last_location_coordinate)) {
                     Text(
                         text = "${location.longitude}, ${location.latitude}",
                         fontFamily = FontFamily.Monospace
@@ -45,13 +47,13 @@ fun LatestLocationCard(count: UInt, location: Location?) {
         ) {
             if (location.hasAccuracy()) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Label(text = "Accuracy", imageVector = Icons.Filled.Adjust, imageDescription = "Accuracy")
+                    Label(stringResource(R.string.accuracy), Icons.Filled.Adjust)
                     Text(text = "${location.accuracy} m")
                 }
             }
             if (location.hasSpeed()) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Label(text = "Speed", imageVector = Icons.Filled.Speed, imageDescription = "Speed")
+                    Label(stringResource(R.string.last_location_speed), Icons.Filled.Speed)
                     Text(text = "${location.speed} m/s")
                 }
             }

@@ -1,3 +1,84 @@
 <resources>
     <string name="app_name">Refrain</string>
+
+    <!--Common-->
+    <string name="accuracy">Accuracy</string>
+    <string name="meter">Meter</string>
+    <string name="seconds">Seconds</string>
+    <string name="collapse">Collapse</string>
+    <string name="expand">Expand</string>
+    <string name="edit">Edit</string>
+    <string name="confirm">Confirm</string>
+
+    <!--Cards-->
+    <string name="battery_optimization">Battery Optimization</string>
+    <string name="battery_optimization_description">It\'s highly recommended to disable battery optimization for Refrain.</string>
+    <string name="battery_optimization_configure">Configure</string>
+
+    <string name="filter">Filter</string>
+    <string name="filter_accuracy">Accuracy</string>
+    <string name="filter_accuracy_alt">Accuracy filter</string>
+    <string name="filter_accuracy_description">Set minimum accuracy, 0 for no limit.</string>
+
+    <string name="interval">Interval</string>
+    <string name="interval_time">Time</string>
+    <string name="interval_time_alt">Time interval</string>
+    <string name="interval_time_description">Set minimum time interval.</string>
+    <string name="interval_distance">Distance</string>
+    <string name="interval_distance_alt">Distance interval</string>
+    <string name="interval_distance_description">Set minimum distance interval.</string>
+
+    <string name="last_location">Latest Location</string>
+    <string name="last_location_locating">Locating…</string>
+    <string name="last_location_locating_alt">Locating</string>
+    <string name="last_location_coordinate">Coordinate</string>
+    <string name="last_location_speed">Speed</string>
+
+    <string name="location_permission">Location Permission</string>
+    <string name="location_permission_description">Refrain requires the permission to access high accuracy locations.</string>
+    <string name="location_permission_request">Request</string>
+
+    <string name="output_format">Format</string>
+    <string name="output_format_alt">Output Format</string>
+    <string name="output_format_csv">CSV</string>
+    <string name="output_format_gpx">GPX</string>
+    <string name="output_format_kml">KML</string>
+
+    <string name="output_path">Output Path</string>
+    <string name="output_path_description">Output Path</string>
+    <string name="output_path_select">Select</string>
+    <string name="output_path_change">Change</string>
+
+    <string name="provider">Provider</string>
+    <string name="provider_by">Provider: %1$s</string>
+    <string name="provider_alt">Location Provider</string>
+    <string name="provider_undefined">Undefined</string>
+    <string name="provider_gps">Satellite</string>
+    <string name="provider_fused">Fused</string>
+    <string name="provider_network">Network</string>
+    <string name="provider_passive">Passive</string>
+
+    <string name="satellites">Satellites</string>
+    <string name="satellites_fixing">Fixing…</string>
+    <string name="satellites_fixing_alt">Fixing</string>
+    <string name="satellites_total">Total</string>
+    <string name="satellites_gps">Total</string>
+    <string name="satellites_sbas">Total</string>
+    <string name="satellites_glonass">Total</string>
+    <string name="satellites_qzss">Total</string>
+    <string name="satellites_beidou">Total</string>
+    <string name="satellites_galileo">Total</string>
+    <string name="satellites_irnss">Total</string>
+    <string name="satellites_unknown">Total</string>
+    <string name="satellites_count_description">Count of %1$s satellites</string>
+
+    <string name="tracing_status_tracing">Tracing</string>
+    <string name="tracing_status_ready">Ready</string>
+    <string name="tracing_status_stop">Stop</string>
+    <string name="tracing_status_start">Start</string>
+
+    <!-- Service -->
+    <string name="service_foreground_channel_description">Refrain Trace Service foreground notification</string>
+    <string name="service_notification_tracing">Trace Service is tracing.</string>
+    <string name="service_notification_standby">Trace Service stands by.</string>
 </resources>

@@ -7,6 +7,8 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import labs.lucka.refrain.R
 import labs.lucka.refrain.ui.compose.ExpandableCard
 import labs.lucka.refrain.ui.compose.Label
 
@@ -21,22 +23,21 @@ fun SatellitesCard(gnssStatus: GnssStatus?) {
                 verticalArrangement = Arrangement.spacedBy(Constants.ContentSpace)
             ) {
                 Label(
-                    text = "Fixing...",
+                    text = stringResource(R.string.satellites_fixing),
                     imageVector = Icons.Filled.SignalCellular0Bar,
-                    imageDescription = "Fixing",
+                    imageDescription = stringResource(R.string.satellites_fixing_alt),
                     style = MaterialTheme.typography.titleLarge
                 )
             }
         }
     } else {
         ExpandableCard(
-            title = "Satellites",
+            title = stringResource(R.string.satellites),
             imageVector = Icons.Filled.SignalCellular4Bar,
-            imageDescription = "Satellites",
             alwaysDisplayedContent = {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Label(text = "Total", imageVector = Icons.Filled.SatelliteAlt, imageDescription = "Count")
-                    Text(text = gnssStatus.satelliteCount.toString())
+                    Label(stringResource(R.string.satellites_total), Icons.Filled.SatelliteAlt)
+                    Text(gnssStatus.satelliteCount.toString())
                 }
             }
         ) {
@@ -46,20 +47,20 @@ fun SatellitesCard(gnssStatus: GnssStatus?) {
             }
             constellationCount.forEach { (constellation, count) ->
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    val name = when (constellation) {
-                        GnssStatus.CONSTELLATION_GPS -> "GPS"
-                        GnssStatus.CONSTELLATION_SBAS -> "SBAS"
-                        GnssStatus.CONSTELLATION_GLONASS -> "GLONASS"
-                        GnssStatus.CONSTELLATION_QZSS -> "QZSS"
-                        GnssStatus.CONSTELLATION_BEIDOU -> "Beidou"
-                        GnssStatus.CONSTELLATION_GALILEO -> "Galileo"
-                        GnssStatus.CONSTELLATION_IRNSS -> "IRNSS"
-                        else -> "Unknown"
+                    val nameId = when (constellation) {
+                        GnssStatus.CONSTELLATION_GPS -> R.string.satellites_gps
+                        GnssStatus.CONSTELLATION_SBAS -> R.string.satellites_sbas
+                        GnssStatus.CONSTELLATION_GLONASS -> R.string.satellites_glonass
+                        GnssStatus.CONSTELLATION_QZSS -> R.string.satellites_qzss
+                        GnssStatus.CONSTELLATION_BEIDOU -> R.string.satellites_beidou
+                        GnssStatus.CONSTELLATION_GALILEO -> R.string.satellites_galileo
+                        GnssStatus.CONSTELLATION_IRNSS -> R.string.satellites_irnss
+                        else -> R.string.satellites_unknown
                     }
                     Label(
-                        text = name,
-                        imageVector = Icons.Filled.SatelliteAlt,
-                        imageDescription = "Count for $name satellites"
+                        stringResource(nameId),
+                        Icons.Filled.SatelliteAlt,
+                        imageDescription = stringResource(R.string.satellites_count_description, stringResource(nameId))
                     )
                     Text(text = count.toString())
                 }
