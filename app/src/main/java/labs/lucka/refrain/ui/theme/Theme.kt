@@ -10,17 +10,26 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
+private val LightColorScheme = lightColorScheme(
     primary = Mikan40,
+    primaryContainer = Mikan90,
+    onPrimaryContainer = Mikan10,
     secondary = Aqua40,
+    secondaryContainer = Aqua90,
+    onSecondaryContainer = Aqua10,
     tertiary = Pink40
 )
 
-private val LightColorScheme = lightColorScheme(
+private val DarkColorScheme = darkColorScheme(
     primary = Mikan80,
+    onPrimary = Mikan20,
+    primaryContainer = Mikan30,
+    onPrimaryContainer = Mikan90,
     secondary = Aqua80,
+    onSecondary = Aqua20,
+    secondaryContainer = Aqua30,
+    onSecondaryContainer = Aqua90,
     tertiary = Pink80
-
 )
 
 @Composable
