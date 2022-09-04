@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import labs.lucka.refrain.R
+import labs.lucka.refrain.ui.content.main.MainContents
 import labs.lucka.refrain.ui.theme.RefrainTheme
 
 @Composable

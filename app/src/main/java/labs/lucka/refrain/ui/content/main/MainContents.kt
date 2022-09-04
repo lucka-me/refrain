@@ -1,9 +1,8 @@
-package labs.lucka.refrain.ui
+package labs.lucka.refrain.ui.content.main
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
@@ -11,6 +10,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import labs.lucka.refrain.common.preferences.Keys
+import labs.lucka.refrain.ui.RefrainModel
 import labs.lucka.refrain.ui.card.*
 import labs.lucka.refrain.ui.compose.rememberPreference
 
@@ -60,5 +60,7 @@ fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
         if (model.ignoringBatteryOptimization == false) {
             item { BatteryOptimizationCard() }
         }
+
+        item { AboutRow() }
     }
 }

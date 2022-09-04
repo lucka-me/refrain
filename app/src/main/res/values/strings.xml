@@ -77,6 +77,9 @@
     <string name="tracing_status_tracing">Tracing</string>
     <string name="tracing_status_ready">Ready</string>
 
+    <!-- About -->
+    <string name="source_code">Source Code</string>
+
     <!-- Service -->
     <string name="service_foreground_channel_description">Refrain Trace Service foreground notification</string>
     <string name="service_notification_tracing">Trace Service is tracing.</string>
