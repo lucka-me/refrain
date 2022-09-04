@@ -1,24 +1,57 @@
 package labs.lucka.refrain.ui
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
+import labs.lucka.refrain.common.preferences.Keys
 import labs.lucka.refrain.ui.card.*
+import labs.lucka.refrain.ui.compose.rememberPreference
 
 @Composable
-fun MainContents(model: RefrainModel) {
-    TracingStatusCard(tracing = model.tracing) {
-        model.toggle()
-    }
-    if (model.tracing) {
-        LatestLocationCard(count = model.count, location = model.latestLocation)
-        SatellitesCard(model.latestGnssStatus)
-    }
-    ProviderCard(!model.tracing)
-    OutputFormatCard(!model.tracing)
-    FilterCard(!model.tracing)
-    IntervalsCard(!model.tracing)
-    OutputPathCard(!model.tracing)
+@OptIn(ExperimentalPermissionsApi::class)
+fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
+    val outputPath by rememberPreference(Keys.outputPath, "")
+    val locationPermissionState = rememberPermissionState(
+        android.Manifest.permission.ACCESS_FINE_LOCATION
+    )
+    LazyColumn(
+        modifier = Modifier.padding(horizontal = 12.dp),
+        contentPadding = PaddingValues(
+            top = contentPadding.calculateTopPadding() + 12.dp,
+            bottom = contentPadding.calculateBottomPadding() + 12.dp
+        ),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        if (locationPermissionState.status != PermissionStatus.Granted) {
+            item { LocationPermissionCard { locationPermissionState.launchPermissionRequest() } }
+        }
 
-    if (model.ignoringBatteryOptimization == false) {
-        BatteryOptimizationCard()
+        if (outputPath.isEmpty()) {
+            item { OutputPathCard(true) }
+        }
+        if (locationPermissionState.status == PermissionStatus.Granted && outputPath.isNotEmpty()) {
+            item { TracingStatusCard(model.tracing) { model.toggle() } }
+            if (model.tracing) {
+                item { LatestLocationCard(model.count, model.latestLocation) }
+                item { SatellitesCard(model.latestGnssStatus) }
+            }
+            item { ProviderCard(!model.tracing) }
+            item { OutputFormatCard(!model.tracing) }
+            item { FilterCard(!model.tracing) }
+            item { IntervalsCard(!model.tracing) }
+            item { OutputPathCard(!model.tracing) }
+        }
+
+        if (model.ignoringBatteryOptimization == false) {
+            item { BatteryOptimizationCard() }
+        }
     }
 }

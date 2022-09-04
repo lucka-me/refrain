@@ -1,12 +1,10 @@
 package labs.lucka.refrain.ui
 
-import android.Manifest
 import android.app.Service
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.os.IBinder
@@ -32,21 +30,10 @@ class RefrainModel : ViewModel() {
         private set
     var latestLocation: Location? by mutableStateOf(null)
         private set
-    var locationPermissionsGranted: Boolean by mutableStateOf(false)
-        private set
     var serviceConnected: Boolean by mutableStateOf(false)
         private set
     var tracing: Boolean by mutableStateOf(false)
         private set
-
-    fun handlePermissionResults(context: Context, results: Map<String, Boolean>) {
-        if (results[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
-            locationPermissionsGranted = true
-            if (!updatingGnssStatus) {
-                engageGnssUpdate(context)
-            }
-        }
-    }
 
     fun onCreate(context: Context) {
         engageService(context)
@@ -62,7 +49,6 @@ class RefrainModel : ViewModel() {
     }
 
     fun onResume(context: Context) {
-        updatePermissionStats(context)
         engageService(context)
         engageGnssUpdate(context)
         ignoringBatteryOptimization =
@@ -147,7 +133,7 @@ class RefrainModel : ViewModel() {
     }
 
     private fun engageGnssUpdate(context: Context) {
-        if (updatingGnssStatus || !locationPermissionsGranted) return
+        if (updatingGnssStatus) return
         val locationManager = context.getSystemService<LocationManager>() ?: return
         try {
             LocationManagerCompat.registerGnssStatusCallback(locationManager, context.mainExecutor, gnssStatusCallback)
@@ -155,12 +141,5 @@ class RefrainModel : ViewModel() {
             return
         }
         updatingGnssStatus = true
-    }
-
-    private fun updatePermissionStats(context: Context) {
-        locationPermissionsGranted =
-            context.checkSelfPermission(
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
     }
 }
