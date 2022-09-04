@@ -15,9 +15,12 @@ import labs.lucka.refrain.R
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun TracingStatusCard(tracing: Boolean, onToggle: () -> Unit) {
-    Card(
-        onClick = onToggle
-    ) {
+    val cardColors = if (tracing) {
+        CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+    } else {
+        CardDefaults.cardColors()
+    }
+    Card(onClick = onToggle, colors = cardColors) {
         Column(modifier = Modifier.padding(all = Constants.CardPadding)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
