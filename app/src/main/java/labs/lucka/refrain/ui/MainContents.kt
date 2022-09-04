@@ -1,12 +1,11 @@
 package labs.lucka.refrain.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
@@ -18,20 +17,28 @@ import labs.lucka.refrain.ui.compose.rememberPreference
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
+    val context = LocalContext.current
     val outputPath by rememberPreference(Keys.outputPath, "")
     val locationPermissionState = rememberPermissionState(
         android.Manifest.permission.ACCESS_FINE_LOCATION
-    )
+    ) { granted ->
+        if (granted) model.onLocationPermissionGranted(context)
+    }
     LazyColumn(
-        modifier = Modifier.padding(horizontal = 12.dp),
         contentPadding = PaddingValues(
+            start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + 12.dp,
             top = contentPadding.calculateTopPadding() + 12.dp,
+            end = contentPadding.calculateEndPadding(LocalLayoutDirection.current) + 12.dp,
             bottom = contentPadding.calculateBottomPadding() + 12.dp
         ),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         if (locationPermissionState.status != PermissionStatus.Granted) {
-            item { LocationPermissionCard { locationPermissionState.launchPermissionRequest() } }
+            item {
+                LocationPermissionCard {
+                    locationPermissionState.launchPermissionRequest()
+                }
+            }
         }
 
         if (outputPath.isEmpty()) {

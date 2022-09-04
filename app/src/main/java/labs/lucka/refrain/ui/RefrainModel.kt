@@ -39,6 +39,10 @@ class RefrainModel : ViewModel() {
         engageService(context)
     }
 
+    fun onLocationPermissionGranted(context: Context) {
+        engageGnssUpdate(context)
+    }
+
     fun onPause(context: Context) {
         disengageService(context)
         if (updatingGnssStatus) {
