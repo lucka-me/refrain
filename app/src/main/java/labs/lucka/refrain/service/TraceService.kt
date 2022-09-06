@@ -26,7 +26,7 @@ import labs.lucka.refrain.R
 import labs.lucka.refrain.common.preferences.Keys
 import labs.lucka.refrain.common.preferencesDataStore
 import labs.lucka.refrain.service.appender.FileAppender
-import labs.lucka.refrain.ui.MainActivity
+import labs.lucka.refrain.MainActivity
 import java.time.LocalDateTime
 import java.time.ZoneId
 

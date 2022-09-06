@@ -1,10 +1,12 @@
-package labs.lucka.refrain.ui
+package labs.lucka.refrain
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
+import labs.lucka.refrain.ui.RefrainApp
+import labs.lucka.refrain.ui.RefrainModel
 
 class MainActivity : ComponentActivity() {
 
