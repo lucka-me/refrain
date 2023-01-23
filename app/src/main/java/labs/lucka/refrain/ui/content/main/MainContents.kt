@@ -54,6 +54,7 @@ fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
             item { OutputFormatCard(!model.tracing) }
             item { FilterCard(!model.tracing) }
             item { IntervalsCard(!model.tracing) }
+            item { SplitCard(!model.tracing) }
             item { OutputPathCard(!model.tracing) }
         }
 

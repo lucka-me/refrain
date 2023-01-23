@@ -24,4 +24,5 @@ interface FileAppender {
     fun append(location: Location)
     fun finish()
     fun prepare(contentResolver: ContentResolver, tree: DocumentFile, dateTime: ZonedDateTime): Boolean
+    fun split()
 }

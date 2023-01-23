@@ -22,10 +22,16 @@ class Keys {
         val kml = booleanPreferencesKey("preference.outputFormat.kml")
     }
 
+    class SplitKeys internal  constructor() {
+        val time = longPreferencesKey("preference.split.time")
+        val distance = floatPreferencesKey("preference.split.distance")
+    }
+
     companion object {
         val filter = FilterKeys()
         val interval = IntervalKeys()
         val outputFormat = OutputFormatKeys()
+        val split = SplitKeys()
         val outputPath = stringPreferencesKey("preference.outputPath")
         val provider = stringPreferencesKey("preference.provider")
     }

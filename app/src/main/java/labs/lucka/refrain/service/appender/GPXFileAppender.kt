@@ -48,5 +48,10 @@ class GPXFileAppender : FileAppender {
         return true
     }
 
+    override fun split() {
+        writer.println("""    </trkseg>""")
+        writer.println("""    <trkseg>""")
+    }
+
     private lateinit var writer: PrintWriter
 }

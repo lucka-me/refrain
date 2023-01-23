@@ -38,5 +38,14 @@ class KMLFileAppender : FileAppender {
         return true
     }
 
+    override fun split() {
+        writer.println("""        </coordinates>""")
+        writer.println("""      </LineString>""")
+        writer.println("""    </Placemark>""")
+        writer.println("""    <Placemark>""")
+        writer.println("""      <LineString>""")
+        writer.println("""        <coordinates>""")
+    }
+
     private lateinit var writer: PrintWriter
 }

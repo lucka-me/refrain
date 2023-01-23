@@ -74,6 +74,14 @@
     <string name="satellites_unknown">Unknown</string>
     <string name="satellites_count_description">Count of %1$s satellites</string>
 
+    <string name="split_card_title">Split</string>
+    <string name="split_card_time">Time</string>
+    <string name="split_card_time_alt">Time interval</string>
+    <string name="split_card_time_description">Split the track if time interval of two locations exceeds this value.</string>
+    <string name="split_card_distance">Distance</string>
+    <string name="split_card_distance_alt">Distance interval</string>
+    <string name="split_card_distance_description">Split the track if distance between two locations exceeds this value.</string>
+
     <string name="tracing_status_tracing">Tracing</string>
     <string name="tracing_status_ready">Ready</string>
 

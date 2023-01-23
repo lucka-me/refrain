@@ -30,5 +30,9 @@ class CSVFileAppender : FileAppender {
         return true
     }
 
+    override fun split() {
+        writer.println()
+    }
+
     private lateinit var writer: PrintWriter
 }

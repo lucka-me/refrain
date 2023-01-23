@@ -157,6 +157,9 @@ class TraceService : Service() {
         val timeInterval = preferencesDataStore.data.map { it[Keys.interval.time] ?: 0 }.first()
         val distanceInterval = preferencesDataStore.data.map { it[Keys.interval.distance] ?: 0F }.first()
 
+        splitTimeInterval = preferencesDataStore.data.map { it[Keys.split.time] ?: 0 }.first()
+        splitDistanceInterval = preferencesDataStore.data.map { it[Keys.split.distance] ?: 0F }.first()
+
         val locationRequest = LocationRequestCompat.Builder(timeInterval * 1000)
             .setQuality(LocationRequestCompat.QUALITY_HIGH_ACCURACY)
             .setMinUpdateDistanceMeters(distanceInterval)
@@ -173,6 +176,7 @@ class TraceService : Service() {
         mainExecutor.execute {
             count = 0U
             tracing = true
+            lastLocation = null
             applicationContext.getSystemService<NotificationManager>()
                 ?.notify(foregroundNotificationId, buildNotification())
             notifyStart(true)
@@ -183,11 +187,26 @@ class TraceService : Service() {
     private var appenders = mutableListOf<FileAppender>()
     private val binder = TraceBinder()
     private val job = SupervisorJob()
-    private val supervisorScope = CoroutineScope(Dispatchers.Main + job)
+    private var lastLocation: Location? = null
     private var listeners = mutableListOf<TraceListener>()
+    private var splitTimeInterval: Long = 0
+    private var splitDistanceInterval = 0F
+    private val supervisorScope = CoroutineScope(Dispatchers.Main + job)
 
     private val locationListener = LocationListenerCompat { location ->
         if (accuracyFilter > 0 && location.accuracy > accuracyFilter) return@LocationListenerCompat
+
+        val lastLocation = lastLocation
+        if (lastLocation != null) {
+            if (
+                (splitTimeInterval > 0 && location.time - lastLocation.time > splitTimeInterval) ||
+                (splitDistanceInterval > 0 && lastLocation.distanceTo(location) > splitDistanceInterval)
+            ) {
+                for (appender in appenders) {
+                    appender.split()
+                }
+            }
+        }
 
         count++
         for (appender in appenders) {
@@ -196,6 +215,8 @@ class TraceService : Service() {
         for (listener in listeners) {
             listener.onLocationUpdated(count, location)
         }
+
+        this.lastLocation = location
     }
 
     private fun notifyStart(succeed: Boolean) {

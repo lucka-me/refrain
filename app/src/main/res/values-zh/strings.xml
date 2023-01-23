@@ -60,6 +60,13 @@
     <string name="satellites_irnss">印度区域导航</string>
     <string name="satellites_unknown">未知</string>
     <string name="satellites_count_description">%1$s的卫星数量</string>
+    <string name="split_card_title">打断</string>
+    <string name="split_card_time">时间</string>
+    <string name="split_card_time_alt">时间间隔</string>
+    <string name="split_card_time_description">如果两个定位的时间间隔超过此值就打断轨迹。</string>
+    <string name="split_card_distance">距离</string>
+    <string name="split_card_distance_alt">距离间隔</string>
+    <string name="split_card_distance_description">如果两个定位的距离间隔超过此值就打断轨迹。</string>
     <string name="tracing_status_tracing">正在追踪</string>
     <string name="tracing_status_ready">就绪</string>
     <string name="service_foreground_channel_description">Refrain追踪服务前台通知</string>
