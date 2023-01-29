@@ -157,7 +157,7 @@ class TraceService : Service() {
         val timeInterval = preferencesDataStore.data.map { it[Keys.interval.time] ?: 0 }.first()
         val distanceInterval = preferencesDataStore.data.map { it[Keys.interval.distance] ?: 0F }.first()
 
-        splitTimeInterval = preferencesDataStore.data.map { it[Keys.split.time] ?: 0 }.first()
+        splitTimeInterval = preferencesDataStore.data.map { it[Keys.split.time] ?: 0 }.first() * 1000
         splitDistanceInterval = preferencesDataStore.data.map { it[Keys.split.distance] ?: 0F }.first()
 
         val locationRequest = LocationRequestCompat.Builder(timeInterval * 1000)

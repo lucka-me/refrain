@@ -1,6 +1,6 @@
 # Refrain
 
-![](app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
+![](app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png)
 
 [![Lines of code](https://img.shields.io/tokei/lines/github/lucka-me/refrain)](# "Repository")
 [![Target API](https://img.shields.io/badge/target_api-33-78C257.svg)](https://developer.android.com/about/versions/13 "Android 13")
