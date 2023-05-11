@@ -68,14 +68,15 @@ class TraceService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        val notificationManager = applicationContext.getSystemService<NotificationManager>()
-        if (notificationManager != null) {
+        val currentNotificationManager = applicationContext.getSystemService<NotificationManager>()
+        if (currentNotificationManager != null) {
             val notificationChannel = NotificationChannel(
                 channelId, getText(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationChannel.description = getString(R.string.service_foreground_channel_description)
             notificationChannel.setSound(null, null)
-            notificationManager.createNotificationChannel(notificationChannel)
+            currentNotificationManager.createNotificationChannel(notificationChannel)
+            notificationManager = currentNotificationManager
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
@@ -102,14 +103,13 @@ class TraceService : Service() {
 
     fun stop() {
         tracing = false
-        val locationManager = applicationContext.getSystemService(LocationManager::class.java)
-        locationManager.removeUpdates(locationListener)
+        applicationContext.getSystemService<LocationManager>()
+            ?.removeUpdates(locationListener)
         notifyStop()
         for (appender in appenders) {
             appender.finish()
         }
-        applicationContext.getSystemService<NotificationManager>()
-            ?.notify(foregroundNotificationId, buildNotification())
+        notificationManager?.notify(foregroundNotificationId, buildNotification())
     }
 
     suspend fun start() {
@@ -170,7 +170,9 @@ class TraceService : Service() {
         val provider = preferencesDataStore.data.map { it[Keys.provider] ?: LocationManager.GPS_PROVIDER }.first()
 
         try {
-            LocationManagerCompat.requestLocationUpdates(locationManager, provider, locationRequest, mainExecutor, locationListener)
+            LocationManagerCompat.requestLocationUpdates(
+                locationManager, provider, locationRequest, mainExecutor, locationListener
+            )
         } catch (e: SecurityException) {
             mainExecutor.execute { notifyStart(false) }
             return
@@ -179,8 +181,7 @@ class TraceService : Service() {
             count = 0U
             tracing = true
             lastLocation = null
-            applicationContext.getSystemService<NotificationManager>()
-                ?.notify(foregroundNotificationId, buildNotification())
+            notificationManager?.notify(foregroundNotificationId, buildNotification())
             notifyStart(true)
         }
     }
@@ -191,6 +192,7 @@ class TraceService : Service() {
     private val job = SupervisorJob()
     private var lastLocation: Location? = null
     private var listeners = mutableListOf<TraceListener>()
+    private var notificationManager: NotificationManager? = null
     private var splitTimeInterval: Long = 0
     private var splitDistanceInterval = 0F
     private val supervisorScope = CoroutineScope(Dispatchers.Main + job)
@@ -219,6 +221,8 @@ class TraceService : Service() {
         }
 
         this.lastLocation = location
+
+        notificationManager?.notify(foregroundNotificationId, buildNotification())
     }
 
     private fun notifyStart(succeed: Boolean) {
@@ -254,15 +258,21 @@ class TraceService : Service() {
         )
             .build()
 
-        val contentTextId = if (tracing) R.string.service_notification_tracing else R.string.service_notification_standby
-        return Notification.Builder(this, channelId)
+        val builder = Notification.Builder(this, channelId)
             .setCategory(Notification.CATEGORY_SERVICE)
             .setContentTitle(getText(R.string.app_name))
-            .setContentText(getString(contentTextId))
+            .setContentText(
+                getString(if (tracing) R.string.service_notification_tracing else R.string.service_notification_standby)
+            )
             .setContentIntent(contentPendingIntent)
             .addAction(toggleAction)
             .setSmallIcon(R.drawable.ic_notification)
             .setOngoing(true)
-            .build()
+
+        if (tracing) {
+            builder.setSubText("# $count")
+        }
+
+        return builder.build()
     }
 }
