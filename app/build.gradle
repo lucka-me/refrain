@@ -10,7 +10,7 @@ android {
         applicationId "labs.lucka.refrain"
         minSdk 28
         targetSdk 33
-        versionCode 4
+        versionCode 5
         versionName "1.2.0"
         vectorDrawables {
             useSupportLibrary true
