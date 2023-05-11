@@ -29,6 +29,7 @@ import labs.lucka.refrain.service.appender.FileAppender
 import labs.lucka.refrain.MainActivity
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class TraceService : Service() {
 
@@ -120,10 +121,11 @@ class TraceService : Service() {
             return
         }
         val now = LocalDateTime.now().atZone(ZoneId.systemDefault())
+        val displayName = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
         appenders.clear()
         if (preferencesDataStore.data.map { it[Keys.outputFormat.csv] != false }.first()) {
             val appender = FileAppender.Builder(FileAppender.FileType.CSV).build()
-            if (!appender.prepare(contentResolver, outputTree, now)) {
+            if (!appender.prepare(contentResolver, outputTree, displayName)) {
                 mainExecutor.execute { notifyStart(false) }
                 return
             }
@@ -131,7 +133,7 @@ class TraceService : Service() {
         }
         if (preferencesDataStore.data.map { it[Keys.outputFormat.gpx] == true }.first()) {
             val appender = FileAppender.Builder(FileAppender.FileType.GPX).build()
-            if (!appender.prepare(contentResolver, outputTree, now)) {
+            if (!appender.prepare(contentResolver, outputTree, displayName)) {
                 mainExecutor.execute { notifyStart(false) }
                 return
             }
@@ -139,7 +141,7 @@ class TraceService : Service() {
         }
         if (preferencesDataStore.data.map { it[Keys.outputFormat.kml] == true }.first()) {
             val appender = FileAppender.Builder(FileAppender.FileType.KML).build()
-            if (!appender.prepare(contentResolver, outputTree, now)) {
+            if (!appender.prepare(contentResolver, outputTree, displayName)) {
                 mainExecutor.execute { notifyStart(false) }
                 return
             }
