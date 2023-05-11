@@ -36,6 +36,7 @@
     <string name="output_format_gpx">GPX</string>
     <string name="output_format_kml">KML</string>
     <string name="output_path">输出目录</string>
+    <string name="output_path_open">打开</string>
     <string name="output_path_description">请选择Refrain保存轨迹文件的目录。</string>
     <string name="output_path_select">选择</string>
     <string name="output_path_change">更改</string>
