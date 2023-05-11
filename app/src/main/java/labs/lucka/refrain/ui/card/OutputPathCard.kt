@@ -54,7 +54,8 @@ fun OutputPathCard(mutable: Boolean) {
             if (path.isEmpty()) {
                 Text(text = stringResource(R.string.output_path_description))
             } else {
-                Text(text = URLDecoder.decode(path, "UTF-8"))
+                val decodedPath = URLDecoder.decode(path, "UTF-8")
+                Text(text = decodedPath.substring(decodedPath.lastIndexOf(':') + 1))
             }
             Row {
                 if (path.isNotEmpty()) {
