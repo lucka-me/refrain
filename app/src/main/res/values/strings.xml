@@ -48,6 +48,7 @@
 
     <string name="output_path">Output Path</string>
     <string name="output_path_description">Please selected a folder to where Refrain saves the trace files.</string>
+    <string name="output_path_open">Open</string>
     <string name="output_path_select">Select</string>
     <string name="output_path_change">Change</string>
 

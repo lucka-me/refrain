@@ -3,7 +3,6 @@ package labs.lucka.refrain.service.appender
 import android.content.ContentResolver
 import android.location.Location
 import androidx.documentfile.provider.DocumentFile
-import java.time.ZonedDateTime
 
 interface FileAppender {
 
@@ -23,6 +22,6 @@ interface FileAppender {
 
     fun append(location: Location)
     fun finish()
-    fun prepare(contentResolver: ContentResolver, tree: DocumentFile, dateTime: ZonedDateTime): Boolean
+    fun prepare(contentResolver: ContentResolver, tree: DocumentFile, displayName: String): Boolean
     fun split()
 }
