@@ -18,7 +18,7 @@ import labs.lucka.refrain.ui.compose.rememberPreference
 @OptIn(ExperimentalPermissionsApi::class)
 fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
     val context = LocalContext.current
-    val outputPath by rememberPreference(Keys.outputPath, "")
+    val outputPath by rememberPreference(Keys.OutputPath, "")
     val locationPermissionState = rememberPermissionState(
         android.Manifest.permission.ACCESS_FINE_LOCATION
     ) { granted ->

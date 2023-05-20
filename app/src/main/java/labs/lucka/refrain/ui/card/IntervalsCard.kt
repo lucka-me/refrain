@@ -13,8 +13,8 @@ import labs.lucka.refrain.ui.compose.rememberPreference
 
 @Composable
 fun IntervalsCard(mutable: Boolean) {
-    var timeInterval by rememberPreference(Keys.interval.time, 0)
-    var distanceInterval by rememberPreference(Keys.interval.distance, 0F)
+    var timeInterval by rememberPreference(Keys.Interval.Time, 0)
+    var distanceInterval by rememberPreference(Keys.Interval.Distance, 0F)
 
     ExpandableCard(stringResource(R.string.interval), Icons.Filled.Pending) {
         EditWithDialogField(

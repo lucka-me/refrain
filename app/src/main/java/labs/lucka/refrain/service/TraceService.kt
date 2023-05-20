@@ -45,10 +45,9 @@ class TraceService : Service() {
     }
 
     companion object {
-        private const val channelId = "TraceServiceNotification"
-        private const val foregroundNotificationId = 1
-
-        private const val toggleAction = "TraceServiceToggle"
+        private const val NOTIFICATION_ACTION_TOGGLE = "TraceServiceToggle"
+        private const val NOTIFICATION_CHANNEL_ID = "TraceServiceNotification"
+        private const val NOTIFICATION_ID = 1
     }
 
     var count: UInt = 0U
@@ -71,7 +70,7 @@ class TraceService : Service() {
         val currentNotificationManager = applicationContext.getSystemService<NotificationManager>()
         if (currentNotificationManager != null) {
             val notificationChannel = NotificationChannel(
-                channelId, getText(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT
+                NOTIFICATION_CHANNEL_ID, getText(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationChannel.description = getString(R.string.service_foreground_channel_description)
             notificationChannel.setSound(null, null)
@@ -80,14 +79,14 @@ class TraceService : Service() {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
-                foregroundNotificationId, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+                NOTIFICATION_ID, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
             )
         } else {
-            startForeground(foregroundNotificationId, buildNotification())
+            startForeground(NOTIFICATION_ID, buildNotification())
         }
 
         when (intent.action) {
-            toggleAction -> if (tracing) stop() else supervisorScope.launch { start() }
+            NOTIFICATION_ACTION_TOGGLE -> if (tracing) stop() else supervisorScope.launch { start() }
         }
 
         return START_STICKY
@@ -109,12 +108,12 @@ class TraceService : Service() {
         for (appender in appenders) {
             appender.finish()
         }
-        notificationManager?.notify(foregroundNotificationId, buildNotification())
+        notificationManager?.notify(NOTIFICATION_ID, buildNotification())
     }
 
     suspend fun start() {
         // Appenders
-        val outputPath = preferencesDataStore.data.map { it[Keys.outputPath] ?: "" }.first()
+        val outputPath = preferencesDataStore.data.map { it[Keys.OutputPath] ?: "" }.first()
         val outputTree = DocumentFile.fromTreeUri(this, Uri.parse(outputPath))
         if (outputTree == null) {
             mainExecutor.execute { notifyStart(false) }
@@ -123,7 +122,7 @@ class TraceService : Service() {
         val now = LocalDateTime.now().atZone(ZoneId.systemDefault())
         val displayName = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
         appenders.clear()
-        if (preferencesDataStore.data.map { it[Keys.outputFormat.csv] != false }.first()) {
+        if (preferencesDataStore.data.map { it[Keys.OutputFormat.CSV] != false }.first()) {
             val appender = FileAppender.Builder(FileAppender.FileType.CSV).build()
             if (!appender.prepare(contentResolver, outputTree, displayName)) {
                 mainExecutor.execute { notifyStart(false) }
@@ -131,7 +130,7 @@ class TraceService : Service() {
             }
             appenders.add(appender)
         }
-        if (preferencesDataStore.data.map { it[Keys.outputFormat.gpx] == true }.first()) {
+        if (preferencesDataStore.data.map { it[Keys.OutputFormat.GPX] == true }.first()) {
             val appender = FileAppender.Builder(FileAppender.FileType.GPX).build()
             if (!appender.prepare(contentResolver, outputTree, displayName)) {
                 mainExecutor.execute { notifyStart(false) }
@@ -139,7 +138,7 @@ class TraceService : Service() {
             }
             appenders.add(appender)
         }
-        if (preferencesDataStore.data.map { it[Keys.outputFormat.kml] == true }.first()) {
+        if (preferencesDataStore.data.map { it[Keys.OutputFormat.KML] == true }.first()) {
             val appender = FileAppender.Builder(FileAppender.FileType.KML).build()
             if (!appender.prepare(contentResolver, outputTree, displayName)) {
                 mainExecutor.execute { notifyStart(false) }
@@ -155,19 +154,19 @@ class TraceService : Service() {
             return
         }
 
-        accuracyFilter = preferencesDataStore.data.map { it[Keys.filter.accuracy] ?: 0F }.first()
-        val timeInterval = preferencesDataStore.data.map { it[Keys.interval.time] ?: 0 }.first()
-        val distanceInterval = preferencesDataStore.data.map { it[Keys.interval.distance] ?: 0F }.first()
+        accuracyFilter = preferencesDataStore.data.map { it[Keys.Filter.Accuracy] ?: 0F }.first()
+        val timeInterval = preferencesDataStore.data.map { it[Keys.Interval.Time] ?: 0 }.first()
+        val distanceInterval = preferencesDataStore.data.map { it[Keys.Interval.Distance] ?: 0F }.first()
 
-        splitTimeInterval = preferencesDataStore.data.map { it[Keys.split.time] ?: 0 }.first() * 1000
-        splitDistanceInterval = preferencesDataStore.data.map { it[Keys.split.distance] ?: 0F }.first()
+        splitTimeInterval = preferencesDataStore.data.map { it[Keys.Split.Time] ?: 0 }.first() * 1000
+        splitDistanceInterval = preferencesDataStore.data.map { it[Keys.Split.Distance] ?: 0F }.first()
 
         val locationRequest = LocationRequestCompat.Builder(timeInterval * 1000)
             .setQuality(LocationRequestCompat.QUALITY_HIGH_ACCURACY)
             .setMinUpdateDistanceMeters(distanceInterval)
             .build()
 
-        val provider = preferencesDataStore.data.map { it[Keys.provider] ?: LocationManager.GPS_PROVIDER }.first()
+        val provider = preferencesDataStore.data.map { it[Keys.Provider] ?: LocationManager.GPS_PROVIDER }.first()
 
         try {
             LocationManagerCompat.requestLocationUpdates(
@@ -181,7 +180,7 @@ class TraceService : Service() {
             count = 0U
             tracing = true
             lastLocation = null
-            notificationManager?.notify(foregroundNotificationId, buildNotification())
+            notificationManager?.notify(NOTIFICATION_ID, buildNotification())
             notifyStart(true)
         }
     }
@@ -222,7 +221,7 @@ class TraceService : Service() {
 
         this.lastLocation = location
 
-        notificationManager?.notify(foregroundNotificationId, buildNotification())
+        notificationManager?.notify(NOTIFICATION_ID, buildNotification())
     }
 
     private fun notifyStart(succeed: Boolean) {
@@ -252,14 +251,14 @@ class TraceService : Service() {
             PendingIntent.getService(
                 this,
                 0,
-                Intent(this, TraceService::class.java).apply { action = toggleAction },
+                Intent(this, TraceService::class.java).apply { action = NOTIFICATION_ACTION_TOGGLE },
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )
             .build()
 
-        val builder = Notification.Builder(this, channelId)
-            .setCategory(Notification.CATEGORY_SERVICE)
+        val builder = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setCategory(Notification.CATEGORY_STATUS)
             .setContentTitle(getText(R.string.app_name))
             .setContentText(
                 getString(if (tracing) R.string.service_notification_tracing else R.string.service_notification_standby)

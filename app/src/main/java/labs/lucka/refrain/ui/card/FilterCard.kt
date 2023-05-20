@@ -16,7 +16,7 @@ import labs.lucka.refrain.ui.compose.rememberPreference
 
 @Composable
 fun FilterCard(mutable: Boolean) {
-    var accuracyFilter by rememberPreference(Keys.filter.accuracy, 0F)
+    var accuracyFilter by rememberPreference(Keys.Filter.Accuracy, 0F)
     ExpandableCard(stringResource(R.string.filter), Icons.Filled.FilterAlt) {
         EditWithDialogField(
             title = stringResource(R.string.filter_accuracy),

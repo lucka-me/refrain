@@ -22,9 +22,9 @@ import labs.lucka.refrain.ui.compose.rememberPreference
 
 @Composable
 fun OutputFormatCard(mutable: Boolean) {
-    var enableCSV by rememberPreference(Keys.outputFormat.csv, true)
-    var enableGPX by rememberPreference(Keys.outputFormat.gpx, false)
-    var enableKML by rememberPreference(Keys.outputFormat.kml, false)
+    var enableCSV by rememberPreference(Keys.OutputFormat.CSV, true)
+    var enableGPX by rememberPreference(Keys.OutputFormat.GPX, false)
+    var enableKML by rememberPreference(Keys.OutputFormat.KML, false)
 
     ExpandableCard(
         stringResource(R.string.output_format),

@@ -25,7 +25,7 @@ import labs.lucka.refrain.ui.compose.rememberPreference
 
 @Composable
 fun ProviderCard(mutable: Boolean) {
-    var provider by rememberPreference(Keys.provider, LocationManager.GPS_PROVIDER)
+    var provider by rememberPreference(Keys.Provider, LocationManager.GPS_PROVIDER)
     data class ProviderData(val nameId: Int, val icon: ImageVector)
     val providers = mapOf(
         LocationManager.GPS_PROVIDER to ProviderData(R.string.provider_gps, Icons.Filled.SatelliteAlt),
