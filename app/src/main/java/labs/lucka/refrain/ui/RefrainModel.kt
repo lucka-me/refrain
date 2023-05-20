@@ -35,7 +35,11 @@ class RefrainModel : ViewModel() {
     var tracing: Boolean by mutableStateOf(false)
         private set
 
+    var locationManager: LocationManager? = null
+        private set
+
     fun onCreate(context: Context) {
+        locationManager = context.getSystemService()
         engageService(context)
     }
 
@@ -46,8 +50,8 @@ class RefrainModel : ViewModel() {
     fun onPause(context: Context) {
         disengageService(context)
         if (updatingGnssStatus) {
-            val locationManager = context.getSystemService<LocationManager>() ?: return
-            LocationManagerCompat.unregisterGnssStatusCallback(locationManager, gnssStatusCallback)
+            val currentLocationManager = locationManager ?: return
+            LocationManagerCompat.unregisterGnssStatusCallback(currentLocationManager, gnssStatusCallback)
             updatingGnssStatus = false
         }
     }
@@ -138,9 +142,11 @@ class RefrainModel : ViewModel() {
 
     private fun engageGnssUpdate(context: Context) {
         if (updatingGnssStatus) return
-        val locationManager = context.getSystemService<LocationManager>() ?: return
+        val currentLocationManager = locationManager ?: return
         try {
-            LocationManagerCompat.registerGnssStatusCallback(locationManager, context.mainExecutor, gnssStatusCallback)
+            LocationManagerCompat.registerGnssStatusCallback(
+                currentLocationManager, context.mainExecutor, gnssStatusCallback
+            )
         } catch (e: SecurityException) {
             return
         }

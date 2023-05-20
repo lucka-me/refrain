@@ -35,10 +35,9 @@ import labs.lucka.refrain.ui.compose.Label
 import labs.lucka.refrain.ui.compose.rememberPreference
 
 @Composable
-fun ProviderCard(locationManager: LocationManager, mutable: Boolean) {
+fun ProviderCard(providers: List<String>, mutable: Boolean, isProviderEnabled: (provider: String) -> Boolean) {
     var selectedProvider by rememberPreference(Keys.Provider, LocationManager.GPS_PROVIDER)
     data class ProviderData(val nameId: Int, val icon: ImageVector)
-    val providers = locationManager.allProviders
     val providerDataOf = { provider: String ->
         when (provider) {
             LocationManager.GPS_PROVIDER -> ProviderData(R.string.provider_gps, Icons.Filled.SatelliteAlt)
@@ -95,7 +94,7 @@ fun ProviderCard(locationManager: LocationManager, mutable: Boolean) {
                         data.icon,
                         style = MaterialTheme.typography.bodyLarge
                     )
-                    if (!locationManager.isProviderEnabled(provider)) {
+                    if (!isProviderEnabled(provider)) {
                         Spacer(modifier = Modifier.weight(1F))
                         Label(stringResource(id = R.string.provider_disabled), Icons.Filled.WifiTetheringOff)
                     }
