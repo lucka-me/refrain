@@ -43,11 +43,12 @@
     <string name="provider">来源</string>
     <string name="provider_by">来源：%1$s</string>
     <string name="provider_alt">位置来源</string>
-    <string name="provider_undefined">未定义</string>
+    <string name="provider_undefined">未定义（%1$s）</string>
     <string name="provider_gps">卫星</string>
     <string name="provider_fused">融合</string>
     <string name="provider_network">网络基站</string>
     <string name="provider_passive">被动</string>
+    <string name="provider_disabled">已禁用</string>
     <string name="satellites">卫星</string>
     <string name="satellites_fixing">正在解算…</string>
     <string name="satellites_fixing_alt">正在解算</string>

@@ -55,11 +55,12 @@
     <string name="provider">Provider</string>
     <string name="provider_by">Provider: %1$s</string>
     <string name="provider_alt">Location Provider</string>
-    <string name="provider_undefined">Undefined</string>
+    <string name="provider_undefined">Undefined (%1$s)</string>
     <string name="provider_gps">Satellite</string>
     <string name="provider_fused">Fused</string>
     <string name="provider_network">Network</string>
     <string name="provider_passive">Passive</string>
+    <string name="provider_disabled">Disabled</string>
 
     <string name="satellites">Satellites</string>
     <string name="satellites_fixing">Fixing…</string>

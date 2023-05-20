@@ -1,11 +1,22 @@
 package labs.lucka.refrain.ui.card
 
 import android.location.LocationManager
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.CellTower
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.QuestionMark
+import androidx.compose.material.icons.filled.SatelliteAlt
+import androidx.compose.material.icons.filled.WifiTethering
+import androidx.compose.material.icons.filled.WifiTetheringOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
