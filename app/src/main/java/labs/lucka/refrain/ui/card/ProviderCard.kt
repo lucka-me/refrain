@@ -74,7 +74,7 @@ fun ProviderCard(locationManager: LocationManager, mutable: Boolean) {
             }
 
             if (!mutable) {
-                return@Column
+                return@Card
             }
             for (provider in providers) {
                 val data = providerDataOf(provider)
