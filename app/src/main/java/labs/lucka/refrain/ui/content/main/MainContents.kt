@@ -1,23 +1,42 @@
 package labs.lucka.refrain.ui.content.main
 
-import androidx.compose.foundation.layout.*
+import android.location.LocationManager
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Dangerous
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.core.content.getSystemService
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import labs.lucka.refrain.common.preferences.Keys
 import labs.lucka.refrain.ui.RefrainModel
 import labs.lucka.refrain.ui.card.*
+import labs.lucka.refrain.ui.compose.Label
 import labs.lucka.refrain.ui.compose.rememberPreference
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
     val context = LocalContext.current
+    val locationManager = context.getSystemService<LocationManager>()
+    if (locationManager == null) {
+        Label(
+            "The Location Service is unavailable in your device.",
+            Icons.Filled.Dangerous,
+            style = MaterialTheme.typography.titleLarge
+        )
+        return
+    }
     val outputPath by rememberPreference(Keys.OutputPath, "")
     val locationPermissionState = rememberPermissionState(
         android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -50,7 +69,7 @@ fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
                 item { LatestLocationCard(model.count, model.latestLocation) }
                 item { SatellitesCard(model.latestGnssStatus) }
             }
-            item { ProviderCard(!model.tracing) }
+            item { ProviderCard(locationManager, !model.tracing) }
             item { OutputFormatCard(!model.tracing) }
             item { FilterCard(!model.tracing) }
             item { IntervalsCard(!model.tracing) }

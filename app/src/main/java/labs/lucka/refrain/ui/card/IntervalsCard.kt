@@ -1,8 +1,12 @@
 package labs.lucka.refrain.ui.card
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Pending
+import androidx.compose.material.icons.filled.Straighten
+import androidx.compose.material.icons.filled.Timelapse
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import labs.lucka.refrain.R

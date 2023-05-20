@@ -35,15 +35,19 @@ import labs.lucka.refrain.ui.compose.Label
 import labs.lucka.refrain.ui.compose.rememberPreference
 
 @Composable
-fun ProviderCard(mutable: Boolean) {
-    var provider by rememberPreference(Keys.Provider, LocationManager.GPS_PROVIDER)
+fun ProviderCard(locationManager: LocationManager, mutable: Boolean) {
+    var selectedProvider by rememberPreference(Keys.Provider, LocationManager.GPS_PROVIDER)
     data class ProviderData(val nameId: Int, val icon: ImageVector)
-    val providers = mapOf(
-        LocationManager.GPS_PROVIDER to ProviderData(R.string.provider_gps, Icons.Filled.SatelliteAlt),
-        LocationManager.FUSED_PROVIDER to ProviderData(R.string.provider_fused, Icons.Filled.Lightbulb),
-        LocationManager.NETWORK_PROVIDER to ProviderData(R.string.provider_network, Icons.Filled.CellTower),
-        LocationManager.PASSIVE_PROVIDER to ProviderData(R.string.provider_passive, Icons.Filled.DarkMode)
-    )
+    val providers = locationManager.allProviders
+    val providerDataOf = { provider: String ->
+        when (provider) {
+            LocationManager.GPS_PROVIDER -> ProviderData(R.string.provider_gps, Icons.Filled.SatelliteAlt)
+            LocationManager.FUSED_PROVIDER -> ProviderData(R.string.provider_fused, Icons.Filled.Lightbulb)
+            LocationManager.NETWORK_PROVIDER -> ProviderData(R.string.provider_network, Icons.Filled.CellTower)
+            LocationManager.PASSIVE_PROVIDER -> ProviderData(R.string.provider_passive, Icons.Filled.DarkMode)
+            else -> ProviderData(R.string.provider_undefined, Icons.Filled.QuestionMark)
+        }
+    }
     Card {
         Column(
             modifier = Modifier
@@ -52,37 +56,48 @@ fun ProviderCard(mutable: Boolean) {
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(Constants.ContentSpace)
         ) {
-            Label(
-                if (mutable)
-                    stringResource(R.string.provider)
-                else
-                    stringResource(
-                        R.string.provider_by,
-                        stringResource(providers[provider]?.nameId ?: R.string.provider_undefined)
-                    ),
-                if (mutable) Icons.Filled.WifiTethering else providers[provider]?.icon ?: Icons.Filled.QuestionMark,
-                stringResource(R.string.provider_alt),
-                MaterialTheme.typography.titleLarge
-            )
             if (mutable) {
-                for (pair in providers) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = provider == pair.key,
-                                role = Role.RadioButton,
-                                onClick = { provider = pair.key }
-                            ),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(selected = provider == pair.key, onClick = null)
-                        Label(
-                            stringResource(pair.value.nameId),
-                            pair.value.icon,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                Label(
+                    stringResource(R.string.provider),
+                    Icons.Filled.WifiTethering,
+                    stringResource(R.string.provider_alt),
+                    MaterialTheme.typography.titleLarge
+                )
+            } else {
+                val data = providerDataOf(selectedProvider)
+                Label(
+                    stringResource(R.string.provider_by, stringResource(data.nameId, selectedProvider)),
+                    data.icon,
+                    stringResource(R.string.provider_alt),
+                    MaterialTheme.typography.titleLarge
+                )
+            }
+
+            if (!mutable) {
+                return@Column
+            }
+            for (provider in providers) {
+                val data = providerDataOf(provider)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = selectedProvider == provider,
+                            role = Role.RadioButton,
+                            onClick = { selectedProvider = provider }
+                        ),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(selected = selectedProvider == provider, onClick = null)
+                    Label(
+                        stringResource(data.nameId, selectedProvider),
+                        data.icon,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    if (!locationManager.isProviderEnabled(provider)) {
+                        Spacer(modifier = Modifier.weight(1F))
+                        Label(stringResource(id = R.string.provider_disabled), Icons.Filled.WifiTetheringOff)
                     }
                 }
             }
