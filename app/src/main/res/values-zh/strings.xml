@@ -8,6 +8,7 @@
     <string name="expand">展开</string>
     <string name="edit">编辑</string>
     <string name="confirm">确认</string>
+    <string name="location_service_not_supported">位置服务在您的设备上不可用。</string>
     <string name="battery_optimization">电池优化</string>
     <string name="battery_optimization_configure">配置</string>
     <string name="filter">筛选</string>

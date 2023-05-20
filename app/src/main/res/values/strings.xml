@@ -12,6 +12,9 @@
     <string name="start">Start</string>
     <string name="stop">Stop</string>
 
+    <!--Main Contents-->
+    <string name="location_service_not_supported">The Location Service is not supported on your device.</string>
+
     <!--Cards-->
     <string name="battery_optimization">Battery Optimization</string>
     <string name="battery_optimization_description">It\'s highly recommended to disable battery optimization for Refrain.</string>

@@ -31,7 +31,7 @@ fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
     val locationManager = model.locationManager
     if (locationManager == null) {
         Label(
-            "The Location Service is unavailable in your device.",
+            stringResource(R.string.location_service_not_supported),
             Icons.Filled.Dangerous,
             style = MaterialTheme.typography.titleLarge
         )
