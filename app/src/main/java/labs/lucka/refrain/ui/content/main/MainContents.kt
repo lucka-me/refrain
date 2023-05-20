@@ -79,6 +79,7 @@ fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
             item { IntervalsCard(!model.tracing) }
             item { SplitCard(!model.tracing) }
             item { OutputPathCard(!model.tracing) }
+            item { PowerCard(!model.tracing) }
         }
 
         if (model.ignoringBatteryOptimization == false) {

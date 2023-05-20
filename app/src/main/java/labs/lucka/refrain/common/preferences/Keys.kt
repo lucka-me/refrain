@@ -21,6 +21,10 @@ object Keys {
         val KML = booleanPreferencesKey("preference.outputFormat.kml")
     }
 
+    object Power {
+        val WakeLock = booleanPreferencesKey("preference.power.wakeLock")
+    }
+
     object Split {
         val Time = longPreferencesKey("preference.split.time")
         val Distance = floatPreferencesKey("preference.split.distance")

@@ -1,6 +1,7 @@
 
 package labs.lucka.refrain.service
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -16,6 +17,7 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import androidx.core.content.getSystemService
 import androidx.core.location.LocationListenerCompat
 import androidx.core.location.LocationManagerCompat
@@ -53,6 +55,7 @@ class TraceService : Service() {
         private const val NOTIFICATION_ACTION_TOGGLE = "TraceServiceToggle"
         private const val NOTIFICATION_CHANNEL_ID = "TraceServiceNotification"
         private const val NOTIFICATION_ID = 1
+        private const val WAKE_LOCK_TAG = "Refrain::TraceService"
     }
 
     var count: UInt = 0U
@@ -68,6 +71,10 @@ class TraceService : Service() {
         stop()
         stopForeground(STOP_FOREGROUND_REMOVE)
         job.cancel()
+        if (wakeLock?.isHeld == true) {
+            wakeLock?.release()
+            wakeLock = null
+        }
         super.onDestroy()
     }
 
@@ -114,8 +121,13 @@ class TraceService : Service() {
             appender.finish()
         }
         notificationManager?.notify(NOTIFICATION_ID, buildNotification())
+        if (wakeLock?.isHeld == true) {
+            wakeLock?.release()
+            wakeLock = null
+        }
     }
 
+    @SuppressLint("WakelockTimeout")
     suspend fun start() {
         // Appenders
         val outputPath = preferencesDataStore.data.map { it[Keys.OutputPath] ?: "" }.first()
@@ -188,6 +200,13 @@ class TraceService : Service() {
             notificationManager?.notify(NOTIFICATION_ID, buildNotification())
             notifyStart(true)
         }
+
+        if (preferencesDataStore.data.map { it[Keys.Power.WakeLock] == true }.first()) {
+            wakeLock = getSystemService<PowerManager>()
+                ?.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)?.apply {
+                    acquire()
+                }
+        }
     }
 
     private var accuracyFilter = 0F
@@ -200,6 +219,7 @@ class TraceService : Service() {
     private var splitTimeInterval: Long = 0
     private var splitDistanceInterval = 0F
     private val supervisorScope = CoroutineScope(Dispatchers.Main + job)
+    private var wakeLock: PowerManager.WakeLock? = null
 
     private val locationListener = LocationListenerCompat { location ->
         if (accuracyFilter > 0 && location.accuracy > accuracyFilter) return@LocationListenerCompat
