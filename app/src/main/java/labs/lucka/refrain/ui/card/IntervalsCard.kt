@@ -1,8 +1,12 @@
 package labs.lucka.refrain.ui.card
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Pending
+import androidx.compose.material.icons.filled.Straighten
+import androidx.compose.material.icons.filled.Timelapse
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import labs.lucka.refrain.R
@@ -13,8 +17,8 @@ import labs.lucka.refrain.ui.compose.rememberPreference
 
 @Composable
 fun IntervalsCard(mutable: Boolean) {
-    var timeInterval by rememberPreference(Keys.interval.time, 0)
-    var distanceInterval by rememberPreference(Keys.interval.distance, 0F)
+    var timeInterval by rememberPreference(Keys.Interval.Time, 0)
+    var distanceInterval by rememberPreference(Keys.Interval.Distance, 0F)
 
     ExpandableCard(stringResource(R.string.interval), Icons.Filled.Pending) {
         EditWithDialogField(

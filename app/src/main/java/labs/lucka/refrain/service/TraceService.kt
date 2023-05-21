@@ -1,7 +1,13 @@
 
 package labs.lucka.refrain.service
 
-import android.app.*
+import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.app.TaskStackBuilder
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.graphics.drawable.Icon
@@ -11,6 +17,7 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import androidx.core.content.getSystemService
 import androidx.core.location.LocationListenerCompat
 import androidx.core.location.LocationManagerCompat
@@ -45,10 +52,10 @@ class TraceService : Service() {
     }
 
     companion object {
-        private const val channelId = "TraceServiceNotification"
-        private const val foregroundNotificationId = 1
-
-        private const val toggleAction = "TraceServiceToggle"
+        private const val NOTIFICATION_ACTION_TOGGLE = "TraceServiceToggle"
+        private const val NOTIFICATION_CHANNEL_ID = "TraceServiceNotification"
+        private const val NOTIFICATION_ID = 1
+        private const val WAKE_LOCK_TAG = "Refrain::TraceService"
     }
 
     var count: UInt = 0U
@@ -64,29 +71,34 @@ class TraceService : Service() {
         stop()
         stopForeground(STOP_FOREGROUND_REMOVE)
         job.cancel()
+        if (wakeLock?.isHeld == true) {
+            wakeLock?.release()
+            wakeLock = null
+        }
         super.onDestroy()
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        val notificationManager = applicationContext.getSystemService<NotificationManager>()
-        if (notificationManager != null) {
+        val currentNotificationManager = applicationContext.getSystemService<NotificationManager>()
+        if (currentNotificationManager != null) {
             val notificationChannel = NotificationChannel(
-                channelId, getText(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT
+                NOTIFICATION_CHANNEL_ID, getText(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationChannel.description = getString(R.string.service_foreground_channel_description)
             notificationChannel.setSound(null, null)
-            notificationManager.createNotificationChannel(notificationChannel)
+            currentNotificationManager.createNotificationChannel(notificationChannel)
+            notificationManager = currentNotificationManager
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
-                foregroundNotificationId, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+                NOTIFICATION_ID, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
             )
         } else {
-            startForeground(foregroundNotificationId, buildNotification())
+            startForeground(NOTIFICATION_ID, buildNotification())
         }
 
         when (intent.action) {
-            toggleAction -> if (tracing) stop() else supervisorScope.launch { start() }
+            NOTIFICATION_ACTION_TOGGLE -> if (tracing) stop() else supervisorScope.launch { start() }
         }
 
         return START_STICKY
@@ -102,19 +114,23 @@ class TraceService : Service() {
 
     fun stop() {
         tracing = false
-        val locationManager = applicationContext.getSystemService(LocationManager::class.java)
-        locationManager.removeUpdates(locationListener)
+        applicationContext.getSystemService<LocationManager>()
+            ?.removeUpdates(locationListener)
         notifyStop()
         for (appender in appenders) {
             appender.finish()
         }
-        applicationContext.getSystemService<NotificationManager>()
-            ?.notify(foregroundNotificationId, buildNotification())
+        notificationManager?.notify(NOTIFICATION_ID, buildNotification())
+        if (wakeLock?.isHeld == true) {
+            wakeLock?.release()
+            wakeLock = null
+        }
     }
 
+    @SuppressLint("WakelockTimeout")
     suspend fun start() {
         // Appenders
-        val outputPath = preferencesDataStore.data.map { it[Keys.outputPath] ?: "" }.first()
+        val outputPath = preferencesDataStore.data.map { it[Keys.OutputPath] ?: "" }.first()
         val outputTree = DocumentFile.fromTreeUri(this, Uri.parse(outputPath))
         if (outputTree == null) {
             mainExecutor.execute { notifyStart(false) }
@@ -123,7 +139,7 @@ class TraceService : Service() {
         val now = LocalDateTime.now().atZone(ZoneId.systemDefault())
         val displayName = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"))
         appenders.clear()
-        if (preferencesDataStore.data.map { it[Keys.outputFormat.csv] != false }.first()) {
+        if (preferencesDataStore.data.map { it[Keys.OutputFormat.CSV] != false }.first()) {
             val appender = FileAppender.Builder(FileAppender.FileType.CSV).build()
             if (!appender.prepare(contentResolver, outputTree, displayName)) {
                 mainExecutor.execute { notifyStart(false) }
@@ -131,7 +147,7 @@ class TraceService : Service() {
             }
             appenders.add(appender)
         }
-        if (preferencesDataStore.data.map { it[Keys.outputFormat.gpx] == true }.first()) {
+        if (preferencesDataStore.data.map { it[Keys.OutputFormat.GPX] == true }.first()) {
             val appender = FileAppender.Builder(FileAppender.FileType.GPX).build()
             if (!appender.prepare(contentResolver, outputTree, displayName)) {
                 mainExecutor.execute { notifyStart(false) }
@@ -139,7 +155,7 @@ class TraceService : Service() {
             }
             appenders.add(appender)
         }
-        if (preferencesDataStore.data.map { it[Keys.outputFormat.kml] == true }.first()) {
+        if (preferencesDataStore.data.map { it[Keys.OutputFormat.KML] == true }.first()) {
             val appender = FileAppender.Builder(FileAppender.FileType.KML).build()
             if (!appender.prepare(contentResolver, outputTree, displayName)) {
                 mainExecutor.execute { notifyStart(false) }
@@ -155,22 +171,24 @@ class TraceService : Service() {
             return
         }
 
-        accuracyFilter = preferencesDataStore.data.map { it[Keys.filter.accuracy] ?: 0F }.first()
-        val timeInterval = preferencesDataStore.data.map { it[Keys.interval.time] ?: 0 }.first()
-        val distanceInterval = preferencesDataStore.data.map { it[Keys.interval.distance] ?: 0F }.first()
+        accuracyFilter = preferencesDataStore.data.map { it[Keys.Filter.Accuracy] ?: 0F }.first()
+        val timeInterval = preferencesDataStore.data.map { it[Keys.Interval.Time] ?: 0 }.first()
+        val distanceInterval = preferencesDataStore.data.map { it[Keys.Interval.Distance] ?: 0F }.first()
 
-        splitTimeInterval = preferencesDataStore.data.map { it[Keys.split.time] ?: 0 }.first() * 1000
-        splitDistanceInterval = preferencesDataStore.data.map { it[Keys.split.distance] ?: 0F }.first()
+        splitTimeInterval = preferencesDataStore.data.map { it[Keys.Split.Time] ?: 0 }.first() * 1000
+        splitDistanceInterval = preferencesDataStore.data.map { it[Keys.Split.Distance] ?: 0F }.first()
 
         val locationRequest = LocationRequestCompat.Builder(timeInterval * 1000)
             .setQuality(LocationRequestCompat.QUALITY_HIGH_ACCURACY)
             .setMinUpdateDistanceMeters(distanceInterval)
             .build()
 
-        val provider = preferencesDataStore.data.map { it[Keys.provider] ?: LocationManager.GPS_PROVIDER }.first()
+        val provider = preferencesDataStore.data.map { it[Keys.Provider] ?: LocationManager.GPS_PROVIDER }.first()
 
         try {
-            LocationManagerCompat.requestLocationUpdates(locationManager, provider, locationRequest, mainExecutor, locationListener)
+            LocationManagerCompat.requestLocationUpdates(
+                locationManager, provider, locationRequest, mainExecutor, locationListener
+            )
         } catch (e: SecurityException) {
             mainExecutor.execute { notifyStart(false) }
             return
@@ -179,9 +197,15 @@ class TraceService : Service() {
             count = 0U
             tracing = true
             lastLocation = null
-            applicationContext.getSystemService<NotificationManager>()
-                ?.notify(foregroundNotificationId, buildNotification())
+            notificationManager?.notify(NOTIFICATION_ID, buildNotification())
             notifyStart(true)
+        }
+
+        if (preferencesDataStore.data.map { it[Keys.Power.WakeLock] == true }.first()) {
+            wakeLock = getSystemService<PowerManager>()
+                ?.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, WAKE_LOCK_TAG)?.apply {
+                    acquire()
+                }
         }
     }
 
@@ -191,9 +215,11 @@ class TraceService : Service() {
     private val job = SupervisorJob()
     private var lastLocation: Location? = null
     private var listeners = mutableListOf<TraceListener>()
+    private var notificationManager: NotificationManager? = null
     private var splitTimeInterval: Long = 0
     private var splitDistanceInterval = 0F
     private val supervisorScope = CoroutineScope(Dispatchers.Main + job)
+    private var wakeLock: PowerManager.WakeLock? = null
 
     private val locationListener = LocationListenerCompat { location ->
         if (accuracyFilter > 0 && location.accuracy > accuracyFilter) return@LocationListenerCompat
@@ -219,6 +245,8 @@ class TraceService : Service() {
         }
 
         this.lastLocation = location
+
+        notificationManager?.notify(NOTIFICATION_ID, buildNotification())
     }
 
     private fun notifyStart(succeed: Boolean) {
@@ -248,21 +276,27 @@ class TraceService : Service() {
             PendingIntent.getService(
                 this,
                 0,
-                Intent(this, TraceService::class.java).apply { action = toggleAction },
+                Intent(this, TraceService::class.java).apply { action = NOTIFICATION_ACTION_TOGGLE },
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )
             .build()
 
-        val contentTextId = if (tracing) R.string.service_notification_tracing else R.string.service_notification_standby
-        return Notification.Builder(this, channelId)
-            .setCategory(Notification.CATEGORY_SERVICE)
+        val builder = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setCategory(Notification.CATEGORY_STATUS)
             .setContentTitle(getText(R.string.app_name))
-            .setContentText(getString(contentTextId))
+            .setContentText(
+                getString(if (tracing) R.string.service_notification_tracing else R.string.service_notification_standby)
+            )
             .setContentIntent(contentPendingIntent)
             .addAction(toggleAction)
             .setSmallIcon(R.drawable.ic_notification)
             .setOngoing(true)
-            .build()
+
+        if (tracing) {
+            builder.setSubText("# $count")
+        }
+
+        return builder.build()
     }
 }

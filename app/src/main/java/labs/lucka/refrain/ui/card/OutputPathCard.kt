@@ -31,7 +31,7 @@ import java.net.URLDecoder
 @Composable
 fun OutputPathCard(mutable: Boolean) {
     val context = LocalContext.current
-    var path by rememberPreference(Keys.outputPath, "")
+    var path by rememberPreference(Keys.OutputPath, "")
     val documentTreeLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocumentTree()
     ) { uri ->

@@ -17,8 +17,8 @@ import labs.lucka.refrain.ui.compose.rememberPreference
 
 @Composable
 fun SplitCard(mutable: Boolean) {
-    var timeInterval by rememberPreference(Keys.split.time, 0)
-    var distanceInterval by rememberPreference(Keys.split.distance, 0F)
+    var timeInterval by rememberPreference(Keys.Split.Time, 0)
+    var distanceInterval by rememberPreference(Keys.Split.Distance, 0F)
 
     ExpandableCard(stringResource(R.string.split_card_title), Icons.Filled.ContentCut) {
         EditWithDialogField(

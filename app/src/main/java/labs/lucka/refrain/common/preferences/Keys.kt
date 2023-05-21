@@ -5,35 +5,32 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 
-class Keys {
-
-    class FilterKeys internal constructor() {
-        val accuracy = floatPreferencesKey("preference.filter.accuracy")
+object Keys {
+    object Filter {
+        val Accuracy = floatPreferencesKey("preference.filter.accuracy")
     }
 
-    class IntervalKeys internal constructor () {
-        val time = longPreferencesKey("preference.interval.time")
-        val distance = floatPreferencesKey("preference.interval.distance")
+    object Interval {
+        val Time = longPreferencesKey("preference.interval.time")
+        val Distance = floatPreferencesKey("preference.interval.distance")
     }
 
-    class OutputFormatKeys internal constructor() {
-        val csv = booleanPreferencesKey("preference.outputFormat.csv")
-        val gpx = booleanPreferencesKey("preference.outputFormat.gpx")
-        val kml = booleanPreferencesKey("preference.outputFormat.kml")
+    object OutputFormat {
+        val CSV = booleanPreferencesKey("preference.outputFormat.csv")
+        val GPX = booleanPreferencesKey("preference.outputFormat.gpx")
+        val KML = booleanPreferencesKey("preference.outputFormat.kml")
     }
 
-    class SplitKeys internal  constructor() {
-        val time = longPreferencesKey("preference.split.time")
-        val distance = floatPreferencesKey("preference.split.distance")
+    object Power {
+        val WakeLock = booleanPreferencesKey("preference.power.wakeLock")
     }
 
-    companion object {
-        val filter = FilterKeys()
-        val interval = IntervalKeys()
-        val outputFormat = OutputFormatKeys()
-        val split = SplitKeys()
-        val outputPath = stringPreferencesKey("preference.outputPath")
-        val provider = stringPreferencesKey("preference.provider")
+    object Split {
+        val Time = longPreferencesKey("preference.split.time")
+        val Distance = floatPreferencesKey("preference.split.distance")
     }
+
+    val OutputPath = stringPreferencesKey("preference.outputPath")
+    val Provider = stringPreferencesKey("preference.provider")
 }
 

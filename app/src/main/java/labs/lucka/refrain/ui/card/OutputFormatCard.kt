@@ -1,6 +1,8 @@
 package labs.lucka.refrain.ui.card
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.InsertDriveFile
@@ -22,9 +24,9 @@ import labs.lucka.refrain.ui.compose.rememberPreference
 
 @Composable
 fun OutputFormatCard(mutable: Boolean) {
-    var enableCSV by rememberPreference(Keys.outputFormat.csv, true)
-    var enableGPX by rememberPreference(Keys.outputFormat.gpx, false)
-    var enableKML by rememberPreference(Keys.outputFormat.kml, false)
+    var enableCSV by rememberPreference(Keys.OutputFormat.CSV, true)
+    var enableGPX by rememberPreference(Keys.OutputFormat.GPX, false)
+    var enableKML by rememberPreference(Keys.OutputFormat.KML, false)
 
     ExpandableCard(
         stringResource(R.string.output_format),

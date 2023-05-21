@@ -12,10 +12,13 @@
     <string name="start">Start</string>
     <string name="stop">Stop</string>
 
+    <!--Main Contents-->
+    <string name="location_service_not_supported">The Location Service is not supported on your device.</string>
+
     <!--Cards-->
     <string name="battery_optimization">Battery Optimization</string>
     <string name="battery_optimization_description">It\'s highly recommended to disable battery optimization for Refrain.</string>
-    <string name="battery_optimization_configure">Configure</string>
+    <string name="battery_optimization_configure">Configure Battery Optimization</string>
 
     <string name="filter">Filter</string>
     <string name="filter_accuracy">Accuracy</string>
@@ -55,11 +58,18 @@
     <string name="provider">Provider</string>
     <string name="provider_by">Provider: %1$s</string>
     <string name="provider_alt">Location Provider</string>
-    <string name="provider_undefined">Undefined</string>
+    <string name="provider_undefined">Undefined (%1$s)</string>
     <string name="provider_gps">Satellite</string>
     <string name="provider_fused">Fused</string>
     <string name="provider_network">Network</string>
     <string name="provider_passive">Passive</string>
+    <string name="provider_disabled">Disabled</string>
+
+    <string name="power">Power</string>
+    <string name="power_enable_wake_lock">Enable Wake Lock</string>
+    <string name="power_enable_wake_lock_description">Some devices may stop update locations when screen is off for
+        a certain period (1 hours for example) to save the battery. Wake Lock will keep the processor active when the
+        screen is off, but may have significant impact to battery life.</string>
 
     <string name="satellites">Satellites</string>
     <string name="satellites_fixing">Fixing…</string>
