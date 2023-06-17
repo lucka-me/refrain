@@ -9,17 +9,18 @@ import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import labs.lucka.refrain.ui.RefrainModel
+import labs.lucka.refrain.ui.LocalRefrainModel
 import labs.lucka.refrain.ui.content.settings.compose.Constants
 
 @Composable
-fun SettingsContents(model: RefrainModel) {
+fun SettingsContents() {
     Column(
         modifier = Modifier
             .padding(vertical = 12.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(Constants.SectionSpace)
     ) {
+        val model = LocalRefrainModel.current
         val locationManager = model.locationManager
         if (locationManager != null) {
             ProvidersSection(locationManager.allProviders, !model.tracing) { provider ->

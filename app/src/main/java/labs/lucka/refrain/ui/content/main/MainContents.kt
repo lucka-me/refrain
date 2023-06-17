@@ -19,13 +19,14 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import labs.lucka.refrain.R
 import labs.lucka.refrain.common.preferences.Keys
-import labs.lucka.refrain.ui.RefrainModel
+import labs.lucka.refrain.ui.LocalRefrainModel
 import labs.lucka.refrain.ui.content.compose.Label
 import labs.lucka.refrain.ui.content.compose.rememberPreference
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
-fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
+fun MainContents(contentPadding: PaddingValues) {
+    val model = LocalRefrainModel.current
     val context = LocalContext.current
     if (model.locationManager == null) {
         Label(

@@ -25,7 +25,7 @@ import labs.lucka.refrain.ui.theme.RefrainTheme
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun RefrainApp(model: RefrainModel) {
+fun RefrainApp() {
     var presentingSettingsSheet by remember { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     RefrainTheme {
@@ -43,12 +43,12 @@ fun RefrainApp(model: RefrainModel) {
                 )
             }
         ) { contentPadding ->
-            MainContents(model, contentPadding)
+            MainContents(contentPadding)
         }
 
         if (presentingSettingsSheet) {
             ModalBottomSheet({ presentingSettingsSheet = false }) {
-                SettingsContents(model)
+                SettingsContents()
             }
         }
     }
