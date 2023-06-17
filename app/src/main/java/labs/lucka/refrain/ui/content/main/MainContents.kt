@@ -10,7 +10,6 @@ import androidx.compose.material.icons.filled.Dangerous
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -27,7 +26,6 @@ import labs.lucka.refrain.ui.content.compose.rememberPreference
 @OptIn(ExperimentalPermissionsApi::class)
 fun MainContents(contentPadding: PaddingValues) {
     val model = LocalRefrainModel.current
-    val context = LocalContext.current
     if (model.locationManager == null) {
         Label(
             stringResource(R.string.location_service_not_supported),
@@ -37,11 +35,7 @@ fun MainContents(contentPadding: PaddingValues) {
         return
     }
     val outputPath by rememberPreference(Keys.OutputPath, "")
-    val locationPermissionState = rememberPermissionState(
-        android.Manifest.permission.ACCESS_FINE_LOCATION
-    ) { granted ->
-        if (granted) model.onLocationPermissionGranted(context)
-    }
+    val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     LazyColumn(
         contentPadding = PaddingValues(
             start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + 12.dp,

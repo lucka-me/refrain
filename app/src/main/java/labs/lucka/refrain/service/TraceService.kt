@@ -19,6 +19,7 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import androidx.core.content.getSystemService
+import androidx.core.location.GnssStatusCompat
 import androidx.core.location.LocationListenerCompat
 import androidx.core.location.LocationManagerCompat
 import androidx.core.location.LocationRequestCompat
@@ -46,6 +47,7 @@ class TraceService : Service() {
     }
 
     interface TraceListener {
+        fun onGnssStatusUpdated(status: GnssStatusCompat)
         fun onLocationUpdated(count: UInt, location: Location)
         fun onStart(succeed: Boolean)
         fun onStop()
@@ -114,8 +116,11 @@ class TraceService : Service() {
 
     fun stop() {
         tracing = false
-        applicationContext.getSystemService<LocationManager>()
-            ?.removeUpdates(locationListener)
+        val locationManager = applicationContext.getSystemService<LocationManager>()
+        if (locationManager != null) {
+            locationManager.removeUpdates(locationListener)
+            LocationManagerCompat.unregisterGnssStatusCallback(locationManager, gnssStatusCallback)
+        }
         notifyStop()
         for (appender in appenders) {
             appender.finish()
@@ -185,18 +190,25 @@ class TraceService : Service() {
 
         val provider = preferencesDataStore.data.map { it[Keys.Provider] ?: LocationManager.GPS_PROVIDER }.first()
 
+        mainExecutor.execute {
+            count = 0U
+            lastLocation = null
+        }
+
         try {
             LocationManagerCompat.requestLocationUpdates(
                 locationManager, provider, locationRequest, mainExecutor, locationListener
+            )
+            LocationManagerCompat.registerGnssStatusCallback(
+                locationManager, mainExecutor, gnssStatusCallback
             )
         } catch (e: SecurityException) {
             mainExecutor.execute { notifyStart(false) }
             return
         }
+
         mainExecutor.execute {
-            count = 0U
             tracing = true
-            lastLocation = null
             notificationManager?.notify(NOTIFICATION_ID, buildNotification())
             notifyStart(true)
         }
@@ -220,6 +232,15 @@ class TraceService : Service() {
     private var splitDistanceInterval = 0F
     private val supervisorScope = CoroutineScope(Dispatchers.Main + job)
     private var wakeLock: PowerManager.WakeLock? = null
+
+    private val gnssStatusCallback = object: GnssStatusCompat.Callback() {
+        override fun onSatelliteStatusChanged(status: GnssStatusCompat) {
+            super.onSatelliteStatusChanged(status)
+            for (listener in listeners) {
+                listener.onGnssStatusUpdated(status)
+            }
+        }
+    }
 
     private val locationListener = LocationListenerCompat { location ->
         if (accuracyFilter > 0 && location.accuracy > accuracyFilter) return@LocationListenerCompat

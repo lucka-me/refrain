@@ -15,7 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.getSystemService
 import androidx.core.location.GnssStatusCompat
-import androidx.core.location.LocationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
@@ -43,10 +42,6 @@ class RefrainModel : ViewModel() {
         locationManager = context.getSystemService()
     }
 
-    fun onLocationPermissionGranted(context: Context) {
-        engageGnssUpdate(context)
-    }
-
     fun onPause(context: Context) {
         if (serviceBound) {
             context.unbindService(serviceConnection)
@@ -55,12 +50,6 @@ class RefrainModel : ViewModel() {
 
         if(!tracing) {
             context.stopService(serviceIntent)
-        }
-
-        if (updatingGnssStatus) {
-            val currentLocationManager = locationManager ?: return
-            LocationManagerCompat.unregisterGnssStatusCallback(currentLocationManager, gnssStatusCallback)
-            updatingGnssStatus = false
         }
     }
 
@@ -71,7 +60,6 @@ class RefrainModel : ViewModel() {
             serviceIntent, serviceConnection, Service.BIND_AUTO_CREATE
         )
 
-        engageGnssUpdate(context)
         ignoringBatteryOptimization =
             context.getSystemService<PowerManager>()?.isIgnoringBatteryOptimizations(context.packageName)
     }
@@ -89,16 +77,6 @@ class RefrainModel : ViewModel() {
     private var serviceBinder: TraceService.TraceBinder? = null
     private var serviceBound = false
     private var serviceIntent: Intent? = null
-    private var updatingGnssStatus = false
-
-    private val gnssStatusCallback = object: GnssStatusCompat.Callback() {
-        override fun onSatelliteStatusChanged(status: GnssStatusCompat) {
-            super.onSatelliteStatusChanged(status)
-            if (status.satelliteCount > 0) {
-                latestGnssStatus = status
-            }
-        }
-    }
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -118,6 +96,10 @@ class RefrainModel : ViewModel() {
     }
 
     private val traceListener = object : TraceService.TraceListener {
+        override fun onGnssStatusUpdated(status: GnssStatusCompat) {
+            latestGnssStatus = status
+        }
+
         override fun onLocationUpdated(count: UInt, location: Location) {
             this@RefrainModel.count = count
             latestLocation = location
@@ -132,19 +114,6 @@ class RefrainModel : ViewModel() {
             count = 0U
             latestLocation = null
         }
-    }
-
-    private fun engageGnssUpdate(context: Context) {
-        if (updatingGnssStatus) return
-        val currentLocationManager = locationManager ?: return
-        try {
-            LocationManagerCompat.registerGnssStatusCallback(
-                currentLocationManager, context.mainExecutor, gnssStatusCallback
-            )
-        } catch (e: SecurityException) {
-            return
-        }
-        updatingGnssStatus = true
     }
 }
 
