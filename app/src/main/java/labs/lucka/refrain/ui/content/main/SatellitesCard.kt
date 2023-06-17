@@ -39,40 +39,54 @@ fun SatellitesCard(gnssStatus: GnssStatusCompat?) {
                 )
             }
         }
-    } else {
-        ExpandableCard(
-            title = stringResource(R.string.satellites),
-            imageVector = Icons.Filled.SignalCellular4Bar,
-            alwaysDisplayedContent = {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Label(stringResource(R.string.satellites_total), Icons.Filled.SatelliteAlt)
-                    Text(gnssStatus.satelliteCount.toString())
-                }
+        return
+    }
+
+    fun nameIdOf(constellation: Int): Int {
+        return when (constellation) {
+            GnssStatusCompat.CONSTELLATION_GPS -> R.string.satellites_gps
+            GnssStatusCompat.CONSTELLATION_SBAS -> R.string.satellites_sbas
+            GnssStatusCompat.CONSTELLATION_GLONASS -> R.string.satellites_glonass
+            GnssStatusCompat.CONSTELLATION_QZSS -> R.string.satellites_qzss
+            GnssStatusCompat.CONSTELLATION_BEIDOU -> R.string.satellites_beidou
+            GnssStatusCompat.CONSTELLATION_GALILEO -> R.string.satellites_galileo
+            GnssStatusCompat.CONSTELLATION_IRNSS -> R.string.satellites_irnss
+            else -> R.string.satellites_unknown
+        }
+    }
+
+    val constellationCount = mutableMapOf<Int, Pair<Int, Int>>()
+    var usedInFixCount = 0
+    for (index in 0 until gnssStatus.satelliteCount) {
+        val usedInFix = gnssStatus.usedInFix(index)
+        constellationCount.merge(
+            gnssStatus.getConstellationType(index),
+            Pair(1, if (usedInFix) 1 else 0)
+        ) { a, b -> Pair(a.first + b.first, a.second + b.second) }
+        if (usedInFix) {
+            usedInFixCount += 1
+        }
+    }
+
+    ExpandableCard(
+        title = stringResource(R.string.satellites),
+        imageVector = Icons.Filled.SignalCellular4Bar,
+        alwaysDisplayedContent = {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Label(stringResource(R.string.satellites_total), Icons.Filled.SatelliteAlt)
+                Text("$usedInFixCount / ${gnssStatus.satelliteCount}")
             }
-        ) {
-            val constellationCount = mutableMapOf<Int, UInt>()
-            for (index in 0 until gnssStatus.satelliteCount) {
-                constellationCount.merge(gnssStatus.getConstellationType(index), 1U, UInt::plus)
-            }
-            constellationCount.forEach { (constellation, count) ->
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    val nameId = when (constellation) {
-                        GnssStatusCompat.CONSTELLATION_GPS -> R.string.satellites_gps
-                        GnssStatusCompat.CONSTELLATION_SBAS -> R.string.satellites_sbas
-                        GnssStatusCompat.CONSTELLATION_GLONASS -> R.string.satellites_glonass
-                        GnssStatusCompat.CONSTELLATION_QZSS -> R.string.satellites_qzss
-                        GnssStatusCompat.CONSTELLATION_BEIDOU -> R.string.satellites_beidou
-                        GnssStatusCompat.CONSTELLATION_GALILEO -> R.string.satellites_galileo
-                        GnssStatusCompat.CONSTELLATION_IRNSS -> R.string.satellites_irnss
-                        else -> R.string.satellites_unknown
-                    }
-                    Label(
-                        stringResource(nameId),
-                        Icons.Filled.SatelliteAlt,
-                        imageDescription = stringResource(R.string.satellites_count_description, stringResource(nameId))
-                    )
-                    Text(text = count.toString())
-                }
+        }
+    ) {
+        constellationCount.forEach { (constellation, count) ->
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                val nameId = nameIdOf(constellation)
+                Label(
+                    stringResource(nameId),
+                    Icons.Filled.SatelliteAlt,
+                    imageDescription = stringResource(R.string.satellites_count_description, stringResource(nameId))
+                )
+                Text("${count.second} / ${count.first}")
             }
         }
     }
