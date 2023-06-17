@@ -22,6 +22,7 @@ object Keys {
     }
 
     object Power {
+        val KeepScreenOn = booleanPreferencesKey("preference.power.keepScreenOn")
         val WakeLock = booleanPreferencesKey("preference.power.wakeLock")
     }
 

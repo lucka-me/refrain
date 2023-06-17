@@ -60,6 +60,7 @@
     <string name="power_enable_wake_lock">开启唤醒锁定</string>
     <string name="power_enable_wake_lock_description">一些设备可能会在锁屏一段时间（例如1小时）后停止更新定位以延长电池寿命。
         唤醒锁定能够使处理器在锁屏时保持活跃状态，但可能对电池寿命有较大影响。</string>
+    <string name="power_enable_keep_screen_on">保持屏幕开启</string>
 
     <string name="provider">来源</string>
     <string name="provider_by">来源：%1$s</string>
