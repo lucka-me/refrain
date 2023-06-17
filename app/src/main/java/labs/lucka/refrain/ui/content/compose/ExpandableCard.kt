@@ -1,4 +1,4 @@
-package labs.lucka.refrain.ui.compose
+package labs.lucka.refrain.ui.content.compose
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import labs.lucka.refrain.R
-import labs.lucka.refrain.ui.card.Constants
+import labs.lucka.refrain.ui.content.main.compose.Constants
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)

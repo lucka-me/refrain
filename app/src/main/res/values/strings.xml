@@ -20,19 +20,6 @@
     <string name="battery_optimization_description">It\'s highly recommended to disable battery optimization for Refrain.</string>
     <string name="battery_optimization_configure">Configure Battery Optimization</string>
 
-    <string name="filter">Filter</string>
-    <string name="filter_accuracy">Accuracy</string>
-    <string name="filter_accuracy_alt">Accuracy filter</string>
-    <string name="filter_accuracy_description">Set minimum accuracy, 0 for no limit.</string>
-
-    <string name="interval">Interval</string>
-    <string name="interval_time">Time</string>
-    <string name="interval_time_alt">Time interval</string>
-    <string name="interval_time_description">Set minimum time interval.</string>
-    <string name="interval_distance">Distance</string>
-    <string name="interval_distance_alt">Distance interval</string>
-    <string name="interval_distance_description">Set minimum distance interval.</string>
-
     <string name="last_location">Latest Location</string>
     <string name="last_location_locating">Locating…</string>
     <string name="last_location_locating_alt">Locating</string>
@@ -55,23 +42,6 @@
     <string name="output_path_select">Select</string>
     <string name="output_path_change">Change</string>
 
-    <string name="provider">Provider</string>
-    <string name="provider_by">Provider: %1$s</string>
-    <string name="provider_alt">Location Provider</string>
-    <string name="provider_undefined">Undefined (%1$s)</string>
-    <string name="provider_gps">Satellite</string>
-    <string name="provider_fused">Fused</string>
-    <string name="provider_network">Network</string>
-    <string name="provider_passive">Passive</string>
-    <string name="provider_disabled">Disabled</string>
-
-    <string name="power">Power</string>
-    <string name="power_enable_wake_lock">Enable Wake Lock</string>
-    <string name="power_enable_wake_lock_description">Some devices may stop update locations when screen is off for
-        a certain period (1 hours for example) to save the battery. Wake Lock will keep the processor active when the
-        screen is off, but may have significant impact to battery life.</string>
-    <string name="power_enable_keep_screen_on">Keep Screen On</string>
-
     <string name="satellites">Satellites</string>
     <string name="satellites_fixing">Fixing…</string>
     <string name="satellites_fixing_alt">Fixing</string>
@@ -86,16 +56,39 @@
     <string name="satellites_unknown">Unknown</string>
     <string name="satellites_count_description">Count of %1$s satellites</string>
 
-    <string name="split_card_title">Split</string>
-    <string name="split_card_time">Time</string>
-    <string name="split_card_time_alt">Time interval</string>
-    <string name="split_card_time_description">Split the track if time interval of two locations exceeds this value.</string>
-    <string name="split_card_distance">Distance</string>
-    <string name="split_card_distance_alt">Distance interval</string>
-    <string name="split_card_distance_description">Split the track if distance between two locations exceeds this value.</string>
-
     <string name="tracing_status_tracing">Tracing</string>
     <string name="tracing_status_ready">Ready</string>
+
+    <!--Settings-->
+    <string name="filter">Filter</string>
+    <string name="filter_accuracy">Accuracy</string>
+    <string name="filter_accuracy_description">Minimum accuracy, 0 for no limit.</string>
+
+    <string name="interval">Interval</string>
+    <string name="interval_time">Time</string>
+    <string name="interval_time_description">Minimum time interval between two locations.</string>
+    <string name="interval_distance">Distance</string>
+    <string name="interval_distance_description">Minimum distance between two locations.</string>
+
+    <string name="power">Power</string>
+    <string name="power_enable_wake_lock">Enable Wake Lock</string>
+    <string name="power_enable_wake_lock_description">Some devices may stop update locations when screen is off for
+        a certain period to save the battery. Wake Lock will keep the processor active when the screen is off.</string>
+    <string name="power_enable_keep_screen_on">Keep Screen On</string>
+
+    <string name="providers">Provider</string>
+    <string name="providers_undefined">Undefined (%1$s)</string>
+    <string name="providers_gps">Satellite</string>
+    <string name="providers_fused">Fused</string>
+    <string name="providers_network">Network</string>
+    <string name="providers_passive">Passive</string>
+    <string name="providers_disabled_suffix"> (Disabled)</string>
+
+    <string name="split">Split</string>
+    <string name="split_time">Time</string>
+    <string name="split_time_description">Split the track if time interval of two locations exceeds this value.</string>
+    <string name="split_distance">Distance</string>
+    <string name="split_distance_description">Split the track if distance between two locations exceeds this value.</string>
 
     <!-- About -->
     <string name="source_code">Source Code</string>

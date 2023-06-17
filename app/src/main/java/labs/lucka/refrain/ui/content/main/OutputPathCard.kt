@@ -1,4 +1,4 @@
-package labs.lucka.refrain.ui.card
+package labs.lucka.refrain.ui.content.main
 
 import android.content.Intent
 import android.net.Uri
@@ -24,8 +24,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.documentfile.provider.DocumentFile
 import labs.lucka.refrain.R
 import labs.lucka.refrain.common.preferences.Keys
-import labs.lucka.refrain.ui.compose.Label
-import labs.lucka.refrain.ui.compose.rememberPreference
+import labs.lucka.refrain.ui.content.compose.Label
+import labs.lucka.refrain.ui.content.compose.rememberPreference
+import labs.lucka.refrain.ui.content.main.compose.Constants
 import java.net.URLDecoder
 
 @Composable

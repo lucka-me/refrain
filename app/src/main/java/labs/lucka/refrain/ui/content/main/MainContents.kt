@@ -20,16 +20,14 @@ import com.google.accompanist.permissions.rememberPermissionState
 import labs.lucka.refrain.R
 import labs.lucka.refrain.common.preferences.Keys
 import labs.lucka.refrain.ui.RefrainModel
-import labs.lucka.refrain.ui.card.*
-import labs.lucka.refrain.ui.compose.Label
-import labs.lucka.refrain.ui.compose.rememberPreference
+import labs.lucka.refrain.ui.content.compose.Label
+import labs.lucka.refrain.ui.content.compose.rememberPreference
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
     val context = LocalContext.current
-    val locationManager = model.locationManager
-    if (locationManager == null) {
+    if (model.locationManager == null) {
         Label(
             stringResource(R.string.location_service_not_supported),
             Icons.Filled.Dangerous,
@@ -69,17 +67,8 @@ fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
                 item { LatestLocationCard(model.count, model.latestLocation) }
                 item { SatellitesCard(model.latestGnssStatus) }
             }
-            item {
-                ProviderCard(locationManager.allProviders, !model.tracing) { provider ->
-                    locationManager.isProviderEnabled(provider)
-                }
-            }
             item { OutputFormatCard(!model.tracing) }
-            item { FilterCard(!model.tracing) }
-            item { IntervalsCard(!model.tracing) }
-            item { SplitCard(!model.tracing) }
             item { OutputPathCard(!model.tracing) }
-            item { PowerCard(!model.tracing) }
         }
 
         if (model.ignoringBatteryOptimization == false) {

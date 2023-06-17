@@ -1,4 +1,4 @@
-package labs.lucka.refrain.ui.card
+package labs.lucka.refrain.ui.content.main.compose
 
 import androidx.compose.ui.unit.dp
 

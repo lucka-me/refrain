@@ -1,4 +1,4 @@
-package labs.lucka.refrain.ui.card
+package labs.lucka.refrain.ui.content.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -19,7 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import labs.lucka.refrain.R
-import labs.lucka.refrain.ui.compose.Label
+import labs.lucka.refrain.ui.content.compose.Label
+import labs.lucka.refrain.ui.content.main.compose.Constants
 
 @Composable
 fun BatteryOptimizationCard() {
