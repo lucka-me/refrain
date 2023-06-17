@@ -12,8 +12,8 @@ import androidx.compose.material.icons.filled.LocationSearching
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Speed
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,7 +26,7 @@ import labs.lucka.refrain.ui.compose.Label
 @Composable
 fun LatestLocationCard(count: UInt, location: Location?) {
     if (location == null) {
-        Card {
+        OutlinedCard {
             Column(
                 modifier = Modifier
                     .padding(all = Constants.CardPadding)

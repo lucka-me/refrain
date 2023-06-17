@@ -9,8 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SatelliteAlt
 import androidx.compose.material.icons.filled.SignalCellular0Bar
 import androidx.compose.material.icons.filled.SignalCellular4Bar
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,7 +23,7 @@ import labs.lucka.refrain.ui.compose.Label
 @Composable
 fun SatellitesCard(gnssStatus: GnssStatusCompat?) {
     if (gnssStatus == null) {
-        Card {
+        OutlinedCard {
             Column(
                 modifier = Modifier
                     .padding(all = Constants.CardPadding)

@@ -17,8 +17,8 @@ import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.SatelliteAlt
 import androidx.compose.material.icons.filled.WifiTethering
 import androidx.compose.material.icons.filled.WifiTetheringOff
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,7 +47,7 @@ fun ProviderCard(providers: List<String>, mutable: Boolean, isProviderEnabled: (
             else -> ProviderData(R.string.provider_undefined, Icons.Filled.QuestionMark)
         }
     }
-    Card {
+    OutlinedCard {
         Column(
             modifier = Modifier
                 .selectableGroup()
@@ -73,7 +73,7 @@ fun ProviderCard(providers: List<String>, mutable: Boolean, isProviderEnabled: (
             }
 
             if (!mutable) {
-                return@Card
+                return@OutlinedCard
             }
             for (provider in providers) {
                 val data = providerDataOf(provider)

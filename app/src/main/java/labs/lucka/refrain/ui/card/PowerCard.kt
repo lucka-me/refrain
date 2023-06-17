@@ -8,9 +8,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Power
-import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +29,7 @@ fun PowerCard(mutable: Boolean) {
     var keepScreenOn by rememberPreference(Keys.Power.KeepScreenOn, false)
     var wakeLockEnabled by rememberPreference(Keys.Power.WakeLock, false)
     val currentView = LocalView.current
-    Card {
+    OutlinedCard {
         Column(
             modifier = Modifier
                 .padding(all = Constants.CardPadding)
