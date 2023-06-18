@@ -62,35 +62,35 @@
 
     <!--Settings-->
 
-    <string name="filter">筛选</string>
-    <string name="filter_accuracy">精度</string>
-    <string name="filter_accuracy_description">设置最低精度，0为无限制。</string>
+    <string name="settings_filter">筛选</string>
+    <string name="settings_filter_accuracy">精度</string>
+    <string name="settings_filter_accuracy_description">设置最低精度，0为无限制。</string>
 
-    <string name="interval">间隔</string>
-    <string name="interval_time">时间</string>
-    <string name="interval_time_description">两个定位之间的最小时间间隔。</string>
-    <string name="interval_distance">距离</string>
-    <string name="interval_distance_description">两个定位之间的最小距离间隔。</string>
+    <string name="settings_interval">间隔</string>
+    <string name="settings_interval_time">时间</string>
+    <string name="settings_interval_time_description">两个定位之间的最小时间间隔。</string>
+    <string name="settings_interval_distance">距离</string>
+    <string name="settings_interval_distance_description">两个定位之间的最小距离间隔。</string>
 
-    <string name="power">电源</string>
-    <string name="power_enable_wake_lock">开启唤醒锁定</string>
-    <string name="power_enable_wake_lock_description">一些设备可能会在锁屏一段时间后停止更新定位以延长电池寿命。
+    <string name="settings_power">电源</string>
+    <string name="settings_power_enable_wake_lock">开启唤醒锁定</string>
+    <string name="settings_power_enable_wake_lock_description">一些设备可能会在锁屏一段时间后停止更新定位以延长电池寿命。
         唤醒锁定能够使处理器在锁屏时保持活跃状态。</string>
-    <string name="power_enable_keep_screen_on">保持屏幕开启</string>
+    <string name="settings_power_enable_keep_screen_on">保持屏幕开启</string>
 
-    <string name="providers">来源</string>
-    <string name="providers_undefined">未定义（%1$s）</string>
-    <string name="providers_gps">卫星</string>
-    <string name="providers_fused">融合</string>
-    <string name="providers_network">网络基站</string>
-    <string name="providers_passive">被动</string>
-    <string name="providers_disabled_suffix">（已禁用）</string>
+    <string name="settings_providers">来源</string>
+    <string name="settings_providers_undefined">未定义（%1$s）</string>
+    <string name="settings_providers_gps">卫星</string>
+    <string name="settings_providers_fused">融合</string>
+    <string name="settings_providers_network">网络基站</string>
+    <string name="settings_providers_passive">被动</string>
+    <string name="settings_providers_disabled_suffix">（已禁用）</string>
 
-    <string name="split">打断</string>
-    <string name="split_time">时间</string>
-    <string name="split_time_description">如果两个定位的时间间隔超过此值就打断轨迹。</string>
-    <string name="split_distance">距离</string>
-    <string name="split_distance_description">如果两个定位的距离间隔超过此值就打断轨迹。</string>
+    <string name="settings_split">打断</string>
+    <string name="settings_split_time">时间</string>
+    <string name="settings_split_time_description">如果两个定位的时间间隔超过此值就打断轨迹。</string>
+    <string name="settings_split_distance">距离</string>
+    <string name="settings_split_distance_description">如果两个定位的距离间隔超过此值就打断轨迹。</string>
 
     <!-- About -->
     <string name="source_code">源代码</string>

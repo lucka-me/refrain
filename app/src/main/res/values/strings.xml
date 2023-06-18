@@ -60,35 +60,35 @@
     <string name="tracing_status_ready">Ready</string>
 
     <!--Settings-->
-    <string name="filter">Filter</string>
-    <string name="filter_accuracy">Accuracy</string>
-    <string name="filter_accuracy_description">Minimum accuracy, 0 for no limit.</string>
+    <string name="settings_filter">Filter</string>
+    <string name="settings_filter_accuracy">Accuracy</string>
+    <string name="settings_filter_accuracy_description">Minimum accuracy, 0 for no limit.</string>
 
-    <string name="interval">Interval</string>
-    <string name="interval_time">Time</string>
-    <string name="interval_time_description">Minimum time interval between two locations.</string>
-    <string name="interval_distance">Distance</string>
-    <string name="interval_distance_description">Minimum distance between two locations.</string>
+    <string name="settings_interval">Interval</string>
+    <string name="settings_interval_time">Time</string>
+    <string name="settings_interval_time_description">Minimum time interval between two locations.</string>
+    <string name="settings_interval_distance">Distance</string>
+    <string name="settings_interval_distance_description">Minimum distance between two locations.</string>
 
-    <string name="power">Power</string>
-    <string name="power_enable_wake_lock">Enable Wake Lock</string>
-    <string name="power_enable_wake_lock_description">Some devices may stop update locations when screen is off for
+    <string name="settings_power">Power</string>
+    <string name="settings_power_enable_wake_lock">Enable Wake Lock</string>
+    <string name="settings_power_enable_wake_lock_description">Some devices may stop update locations when screen is off for
         a certain period to save the battery. Wake Lock will keep the processor active when the screen is off.</string>
-    <string name="power_enable_keep_screen_on">Keep Screen On</string>
+    <string name="settings_power_enable_keep_screen_on">Keep Screen On</string>
 
-    <string name="providers">Provider</string>
-    <string name="providers_undefined">Undefined (%1$s)</string>
-    <string name="providers_gps">Satellite</string>
-    <string name="providers_fused">Fused</string>
-    <string name="providers_network">Network</string>
-    <string name="providers_passive">Passive</string>
-    <string name="providers_disabled_suffix"> (Disabled)</string>
+    <string name="settings_providers">Provider</string>
+    <string name="settings_providers_undefined">Undefined (%1$s)</string>
+    <string name="settings_providers_gps">Satellite</string>
+    <string name="settings_providers_fused">Fused</string>
+    <string name="settings_providers_network">Network</string>
+    <string name="settings_providers_passive">Passive</string>
+    <string name="settings_providers_disabled_suffix"> (Disabled)</string>
 
-    <string name="split">Split</string>
-    <string name="split_time">Time</string>
-    <string name="split_time_description">Split the track if time interval of two locations exceeds this value.</string>
-    <string name="split_distance">Distance</string>
-    <string name="split_distance_description">Split the track if distance between two locations exceeds this value.</string>
+    <string name="settings_split">Split</string>
+    <string name="settings_split_time">Time</string>
+    <string name="settings_split_time_description">Split the track if time interval of two locations exceeds this value.</string>
+    <string name="settings_split_distance">Distance</string>
+    <string name="settings_split_distance_description">Split the track if distance between two locations exceeds this value.</string>
 
     <!-- About -->
     <string name="source_code">Source Code</string>

@@ -15,13 +15,13 @@ import labs.lucka.refrain.ui.content.settings.compose.Section
 fun IntervalSection(mutable: Boolean) {
     var timeInterval by rememberPreference(Keys.Interval.Time, 0)
     var distanceInterval by rememberPreference(Keys.Interval.Distance, 0F)
-    Section(stringResource(R.string.interval)) {
+    Section(stringResource(R.string.settings_interval)) {
         EditWithDialogField(
-            stringResource(R.string.interval_time),
+            stringResource(R.string.settings_interval_time),
             timeInterval,
             { it.toLongOrNull() },
             enabled = mutable,
-            editorDescription = stringResource(R.string.interval_time_description),
+            editorDescription = stringResource(R.string.settings_interval_time_description),
             editorLabelText = stringResource(R.string.seconds),
             keyboardType = KeyboardType.Number
         ) {
@@ -29,11 +29,11 @@ fun IntervalSection(mutable: Boolean) {
         }
 
         EditWithDialogField(
-            stringResource(R.string.interval_distance),
+            stringResource(R.string.settings_interval_distance),
             distanceInterval,
             { it.toFloatOrNull() },
             enabled = mutable,
-            editorDescription = stringResource(R.string.interval_distance_description),
+            editorDescription = stringResource(R.string.settings_interval_distance_description),
             editorLabelText = stringResource(R.string.meter),
             keyboardType = KeyboardType.Decimal
         ) {

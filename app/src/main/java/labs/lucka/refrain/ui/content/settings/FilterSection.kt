@@ -13,14 +13,14 @@ import labs.lucka.refrain.ui.content.settings.compose.Section
 
 @Composable
 fun FilterSection(mutable: Boolean) {
-    Section(stringResource(R.string.filter)) {
+    Section(stringResource(R.string.settings_filter)) {
         var accuracyFilter by rememberPreference(Keys.Filter.Accuracy, 0F)
         EditWithDialogField(
-            stringResource(R.string.filter_accuracy),
+            stringResource(R.string.settings_filter_accuracy),
             accuracyFilter,
             { it.toFloatOrNull() },
             enabled = mutable,
-            editorDescription = stringResource(R.string.filter_accuracy_description),
+            editorDescription = stringResource(R.string.settings_filter_accuracy_description),
             editorLabelText = stringResource(R.string.meter),
             keyboardType = KeyboardType.Decimal
         ) {
