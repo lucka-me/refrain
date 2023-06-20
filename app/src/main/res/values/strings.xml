@@ -63,6 +63,9 @@
     <string name="settings_filter">Filter</string>
     <string name="settings_filter_accuracy">Accuracy</string>
     <string name="settings_filter_accuracy_description">Minimum accuracy, 0 for no limit.</string>
+    <string name="settings_filter_ignore_duplicated">Ignore Duplicated</string>
+    <string name="settings_filter_ignore_duplicated_description">Ignore locations with the same coordinate and accuracy
+        with previous one.</string>
 
     <string name="settings_interval">Interval</string>
     <string name="settings_interval_time">Time</string>

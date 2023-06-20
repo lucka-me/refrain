@@ -9,12 +9,14 @@ import labs.lucka.refrain.R
 import labs.lucka.refrain.common.preferences.Keys
 import labs.lucka.refrain.ui.content.compose.rememberPreference
 import labs.lucka.refrain.ui.content.settings.compose.EditWithDialogField
+import labs.lucka.refrain.ui.content.settings.compose.LabeledSwitch
 import labs.lucka.refrain.ui.content.settings.compose.Section
 
 @Composable
 fun FilterSection(mutable: Boolean) {
     Section(stringResource(R.string.settings_filter)) {
         var accuracyFilter by rememberPreference(Keys.Filter.Accuracy, 0F)
+        var ignoreDuplicated by rememberPreference(Keys.Filter.IgnoreDuplicated, false)
         EditWithDialogField(
             stringResource(R.string.settings_filter_accuracy),
             accuracyFilter,
@@ -25,6 +27,15 @@ fun FilterSection(mutable: Boolean) {
             keyboardType = KeyboardType.Decimal
         ) {
             accuracyFilter = it
+        }
+
+        LabeledSwitch(
+            stringResource(R.string.settings_filter_ignore_duplicated),
+            ignoreDuplicated,
+            descriptions = stringResource(R.string.settings_filter_ignore_duplicated_description),
+            enabled = mutable
+        ) { checked ->
+            ignoreDuplicated = checked
         }
     }
 }

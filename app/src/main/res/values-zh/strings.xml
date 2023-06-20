@@ -65,6 +65,8 @@
     <string name="settings_filter">筛选</string>
     <string name="settings_filter_accuracy">精度</string>
     <string name="settings_filter_accuracy_description">设置最低精度，0为无限制。</string>
+    <string name="settings_filter_ignore_duplicated">忽略重复</string>
+    <string name="settings_filter_ignore_duplicated_description">忽略与前一个位置的坐标和精度相同的位置。</string>
 
     <string name="settings_interval">间隔</string>
     <string name="settings_interval_time">时间</string>

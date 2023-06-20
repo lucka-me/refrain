@@ -182,6 +182,8 @@ class TraceService : Service() {
         }
 
         accuracyFilter = preferencesDataStore.data.map { it[Keys.Filter.Accuracy] ?: 0F }.first()
+        ignoreDuplicated = preferencesDataStore.data.map { it[Keys.Filter.IgnoreDuplicated] == true }.first()
+
         val timeInterval = preferencesDataStore.data.map { it[Keys.Interval.Time] ?: 0 }.first()
         val distanceInterval = preferencesDataStore.data.map { it[Keys.Interval.Distance] ?: 0F }.first()
 
@@ -244,6 +246,7 @@ class TraceService : Service() {
     private var provider = ""
     private var splitTimeInterval: Long = 0
     private var splitDistanceInterval = 0F
+    private var ignoreDuplicated = false
     private val supervisorScope = CoroutineScope(Dispatchers.Main + job)
     private var wakeLock: PowerManager.WakeLock? = null
 
@@ -296,6 +299,14 @@ class TraceService : Service() {
 
         val lastLocation = lastLocation
         if (lastLocation != null) {
+            if (ignoreDuplicated
+                && lastLocation.longitude == location.longitude
+                && lastLocation.latitude == location.latitude
+                && lastLocation.altitude == location.altitude
+                && lastLocation.accuracy == location.accuracy
+            ) {
+                return@LocationListenerCompat
+            }
             if (
                 (splitTimeInterval > 0 && location.time - lastLocation.time > splitTimeInterval) ||
                 (splitDistanceInterval > 0 && lastLocation.distanceTo(location) > splitDistanceInterval)

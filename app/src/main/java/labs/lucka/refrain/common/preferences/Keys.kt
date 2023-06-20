@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 object Keys {
     object Filter {
         val Accuracy = floatPreferencesKey("preference.filter.accuracy")
+        val IgnoreDuplicated = booleanPreferencesKey("preference.filter.ignoreDuplicated")
     }
 
     object Interval {
