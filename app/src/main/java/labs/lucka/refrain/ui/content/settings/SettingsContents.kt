@@ -38,6 +38,9 @@ fun SettingsContents() {
         SplitSection(!model.tracing)
         Divider()
 
+        NotificationSection(!model.tracing)
+        Divider()
+
         PowerSection(!model.tracing)
     }
 }

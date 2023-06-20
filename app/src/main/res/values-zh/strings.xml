@@ -72,6 +72,12 @@
     <string name="settings_interval_distance">距离</string>
     <string name="settings_interval_distance_description">两个定位之间的最小距离间隔。</string>
 
+    <string name="settings_notification">通知</string>
+    <string name="settings_notification_send_when_gnss_stops">GNSS系统停止</string>
+    <string name="settings_notification_send_when_gnss_stops_description">锁屏一段时间后GNSS系统可能会停止，您可能需要解锁设备以激活GNSS系统。</string>
+    <string name="settings_notification_request_permission">请求权限</string>
+    <string name="settings_notification_request_permission_description">Refrain需要权限以发送通知。</string>
+
     <string name="settings_power">电源</string>
     <string name="settings_power_enable_wake_lock">开启唤醒锁定</string>
     <string name="settings_power_enable_wake_lock_description">一些设备可能会在锁屏一段时间后停止更新定位以延长电池寿命。
@@ -97,6 +103,9 @@
 
     <!-- Service -->
     <string name="service_foreground_channel_description">Refrain追踪服务前台通知</string>
-    <string name="service_notification_tracing">追踪服务正在运行。</string>
-    <string name="service_notification_standby">追踪服务就绪。</string>
+    <string name="service_notification_service_tracing">追踪服务正在运行。</string>
+    <string name="service_notification_service_standby">追踪服务就绪。</string>
+
+    <string name="service_notification_gnss_stops_title">GNSS系统已停止</string>
+    <string name="service_notification_gnss_stops_content">您可能需要解锁设备以激活GNSS系统。</string>
 </resources>

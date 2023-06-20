@@ -70,10 +70,18 @@
     <string name="settings_interval_distance">Distance</string>
     <string name="settings_interval_distance_description">Minimum distance between two locations.</string>
 
+    <string name="settings_notification">Notification</string>
+    <string name="settings_notification_send_when_gnss_stops">Notify when GNSS system stops</string>
+    <string name="settings_notification_send_when_gnss_stops_description">GNSS system may stop after screen is off,
+        you may need to unlock the device to activate the GNSS system.</string>
+    <string name="settings_notification_request_permission">Request permission</string>
+    <string name="settings_notification_request_permission_description">Refrain needs the permission to post
+        notifications</string>
+
     <string name="settings_power">Power</string>
     <string name="settings_power_enable_wake_lock">Enable Wake Lock</string>
-    <string name="settings_power_enable_wake_lock_description">Some devices may stop update locations when screen is off for
-        a certain period to save the battery. Wake Lock will keep the processor active when the screen is off.</string>
+    <string name="settings_power_enable_wake_lock_description">Some devices may stop update locations when screen is off
+        for a certain period to save the battery. Wake Lock will keep the processor active when the screen is off.</string>
     <string name="settings_power_enable_keep_screen_on">Keep Screen On</string>
 
     <string name="settings_providers">Provider</string>
@@ -88,13 +96,17 @@
     <string name="settings_split_time">Time</string>
     <string name="settings_split_time_description">Split the track if time interval of two locations exceeds this value.</string>
     <string name="settings_split_distance">Distance</string>
-    <string name="settings_split_distance_description">Split the track if distance between two locations exceeds this value.</string>
+    <string name="settings_split_distance_description">Split the track if distance between two locations exceeds this
+        value.</string>
 
     <!-- About -->
     <string name="source_code">Source Code</string>
 
     <!-- Service -->
     <string name="service_foreground_channel_description">Refrain Trace Service foreground notification</string>
-    <string name="service_notification_tracing">Trace Service is tracing.</string>
-    <string name="service_notification_standby">Trace Service stands by.</string>
+    <string name="service_notification_service_tracing">Trace Service is tracing.</string>
+    <string name="service_notification_service_standby">Trace Service stands by.</string>
+
+    <string name="service_notification_gnss_stops_title">GNSS system stopped</string>
+    <string name="service_notification_gnss_stops_content">You may need to unlock the device to activate the GNSS system.</string>
 </resources>

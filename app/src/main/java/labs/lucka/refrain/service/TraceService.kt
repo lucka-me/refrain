@@ -54,9 +54,10 @@ class TraceService : Service() {
     }
 
     companion object {
-        private const val NOTIFICATION_ACTION_TOGGLE = "TraceServiceToggle"
+        private const val FOREGROUND_SERVICE_NOTIFICATION_ID = 1
+        private const val FOREGROUND_SERVICE_NOTIFICATION_ACTION_TOGGLE = "TraceServiceToggle"
+        private const val GNSS_STATUS_STOPPED_NOTIFICATION_ID = 11
         private const val NOTIFICATION_CHANNEL_ID = "TraceServiceNotification"
-        private const val NOTIFICATION_ID = 1
         private const val WAKE_LOCK_TAG = "Refrain::TraceService"
     }
 
@@ -83,24 +84,28 @@ class TraceService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val currentNotificationManager = applicationContext.getSystemService<NotificationManager>()
         if (currentNotificationManager != null) {
-            val notificationChannel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID, getText(R.string.app_name), NotificationManager.IMPORTANCE_DEFAULT
+            currentNotificationManager.createNotificationChannel(
+                NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID, getText(R.string.app_name), NotificationManager.IMPORTANCE_HIGH
+                ).apply {
+                    description = getString(R.string.service_foreground_channel_description)
+                    setSound(null, null)
+                }
             )
-            notificationChannel.description = getString(R.string.service_foreground_channel_description)
-            notificationChannel.setSound(null, null)
-            currentNotificationManager.createNotificationChannel(notificationChannel)
             notificationManager = currentNotificationManager
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
-                NOTIFICATION_ID, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+                FOREGROUND_SERVICE_NOTIFICATION_ID,
+                buildServiceNotification(),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
             )
         } else {
-            startForeground(NOTIFICATION_ID, buildNotification())
+            startForeground(FOREGROUND_SERVICE_NOTIFICATION_ID, buildServiceNotification())
         }
 
         when (intent.action) {
-            NOTIFICATION_ACTION_TOGGLE -> if (tracing) stop() else supervisorScope.launch { start() }
+            FOREGROUND_SERVICE_NOTIFICATION_ACTION_TOGGLE -> if (tracing) stop() else supervisorScope.launch { start() }
         }
 
         return START_STICKY
@@ -125,7 +130,7 @@ class TraceService : Service() {
         for (appender in appenders) {
             appender.finish()
         }
-        notificationManager?.notify(NOTIFICATION_ID, buildNotification())
+        notificationManager?.notify(FOREGROUND_SERVICE_NOTIFICATION_ID, buildServiceNotification())
         if (wakeLock?.isHeld == true) {
             wakeLock?.release()
             wakeLock = null
@@ -183,12 +188,16 @@ class TraceService : Service() {
         splitTimeInterval = preferencesDataStore.data.map { it[Keys.Split.Time] ?: 0 }.first() * 1000
         splitDistanceInterval = preferencesDataStore.data.map { it[Keys.Split.Distance] ?: 0F }.first()
 
-        val locationRequest = LocationRequestCompat.Builder(timeInterval * 1000)
+        notifyWhenGnssStops = preferencesDataStore.data.map {
+            it[Keys.Notification.NotifyWhenGnssStops] == true
+        }.first()
+
+        val newLocationRequest = LocationRequestCompat.Builder(timeInterval * 1000)
             .setQuality(LocationRequestCompat.QUALITY_HIGH_ACCURACY)
             .setMinUpdateDistanceMeters(distanceInterval)
             .build()
 
-        val provider = preferencesDataStore.data.map { it[Keys.Provider] ?: LocationManager.GPS_PROVIDER }.first()
+        provider = preferencesDataStore.data.map { it[Keys.Provider] ?: LocationManager.GPS_PROVIDER }.first()
 
         mainExecutor.execute {
             count = 0U
@@ -197,7 +206,7 @@ class TraceService : Service() {
 
         try {
             LocationManagerCompat.requestLocationUpdates(
-                locationManager, provider, locationRequest, mainExecutor, locationListener
+                locationManager, provider, newLocationRequest, mainExecutor, locationListener
             )
             LocationManagerCompat.registerGnssStatusCallback(
                 locationManager, mainExecutor, gnssStatusCallback
@@ -207,9 +216,11 @@ class TraceService : Service() {
             return
         }
 
+        locationRequest = newLocationRequest
+
         mainExecutor.execute {
             tracing = true
-            notificationManager?.notify(NOTIFICATION_ID, buildNotification())
+            notificationManager?.notify(FOREGROUND_SERVICE_NOTIFICATION_ID, buildServiceNotification())
             notifyStart(true)
         }
 
@@ -226,8 +237,11 @@ class TraceService : Service() {
     private val binder = TraceBinder()
     private val job = SupervisorJob()
     private var lastLocation: Location? = null
+    private var locationRequest: LocationRequestCompat? = null
     private var listeners = mutableListOf<TraceListener>()
     private var notificationManager: NotificationManager? = null
+    private var notifyWhenGnssStops = false
+    private var provider = ""
     private var splitTimeInterval: Long = 0
     private var splitDistanceInterval = 0F
     private val supervisorScope = CoroutineScope(Dispatchers.Main + job)
@@ -238,6 +252,41 @@ class TraceService : Service() {
             super.onSatelliteStatusChanged(status)
             for (listener in listeners) {
                 listener.onGnssStatusUpdated(status)
+            }
+        }
+
+        override fun onStarted() {
+            super.onStarted()
+            notificationManager?.cancel(GNSS_STATUS_STOPPED_NOTIFICATION_ID)
+        }
+
+        override fun onStopped() {
+            super.onStopped()
+            // The location update is actually suspended and the system begins to supply the listener with the same
+            // location, notify the user to unlock the device to activate GNSS system
+            if (!notifyWhenGnssStops) return
+            val notification = Notification.Builder(this@TraceService, NOTIFICATION_CHANNEL_ID)
+                .setCategory(Notification.CATEGORY_ERROR)
+                .setContentIntent(mainActivityPendingIntent)
+                .setContentText(getString(R.string.service_notification_gnss_stops_content))
+                .setContentTitle(getString(R.string.service_notification_gnss_stops_title))
+                .setSmallIcon(R.drawable.ic_notification)
+                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .build()
+            notificationManager?.notify(GNSS_STATUS_STOPPED_NOTIFICATION_ID, notification)
+
+            val locationManager = applicationContext.getSystemService<LocationManager>()
+            val currentLocationRequest = locationRequest
+            if (locationManager != null && currentLocationRequest != null) {
+                try {
+                    LocationManagerCompat.getCurrentLocation(
+                        locationManager, provider, null, mainExecutor,
+                    ) { location ->
+                        locationListener.onLocationChanged(location)
+                    }
+                } catch (_: SecurityException) {
+
+                }
             }
         }
     }
@@ -267,7 +316,59 @@ class TraceService : Service() {
 
         this.lastLocation = location
 
-        notificationManager?.notify(NOTIFICATION_ID, buildNotification())
+        notificationManager?.notify(FOREGROUND_SERVICE_NOTIFICATION_ID, buildServiceNotification())
+    }
+
+    private val mainActivityPendingIntent: PendingIntent
+        get() {
+            return TaskStackBuilder.create(this)
+                .addNextIntent(Intent(this, MainActivity::class.java))
+                .getPendingIntent(
+                    0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+        }
+
+    private fun buildServiceNotification(): Notification {
+        // Toggle action
+        val toggleAction = Notification.Action.Builder(
+            Icon.createWithResource(
+                this, if (tracing) R.drawable.ic_baseline_stop_24 else R.drawable.ic_baseline_play_arrow_24
+            ),
+            getString(if (tracing) R.string.stop else R.string.start),
+            PendingIntent.getService(
+                this,
+                0,
+                Intent(
+                    this,
+                    TraceService::class.java).apply { action = FOREGROUND_SERVICE_NOTIFICATION_ACTION_TOGGLE },
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        )
+            .build()
+
+        val builder = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .addAction(toggleAction)
+            .setCategory(Notification.CATEGORY_STATUS)
+            .setContentIntent(mainActivityPendingIntent)
+            .setContentText(
+                getString(
+                    if (tracing) {
+                        R.string.service_notification_service_tracing
+                    } else {
+                        R.string.service_notification_service_standby
+                    }
+                )
+            )
+            .setContentTitle(getText(R.string.app_name))
+            .setOngoing(true)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setVisibility(Notification.VISIBILITY_PUBLIC)
+
+        if (tracing) {
+            builder.setSubText("# $count")
+        }
+
+        return builder.build()
     }
 
     private fun notifyStart(succeed: Boolean) {
@@ -280,44 +381,5 @@ class TraceService : Service() {
         for (listener in listeners) {
             listener.onStop()
         }
-    }
-
-    private fun buildNotification(): Notification {
-        // Open app when tap content
-        val contentPendingIntent = TaskStackBuilder.create(this)
-            .addNextIntent(Intent(this, MainActivity::class.java))
-            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-
-        // Toggle action
-        val toggleAction = Notification.Action.Builder(
-            Icon.createWithResource(
-                this, if (tracing) R.drawable.ic_baseline_stop_24 else R.drawable.ic_baseline_play_arrow_24
-            ),
-            getString(if (tracing) R.string.stop else R.string.start),
-            PendingIntent.getService(
-                this,
-                0,
-                Intent(this, TraceService::class.java).apply { action = NOTIFICATION_ACTION_TOGGLE },
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-        )
-            .build()
-
-        val builder = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setCategory(Notification.CATEGORY_STATUS)
-            .setContentTitle(getText(R.string.app_name))
-            .setContentText(
-                getString(if (tracing) R.string.service_notification_tracing else R.string.service_notification_standby)
-            )
-            .setContentIntent(contentPendingIntent)
-            .addAction(toggleAction)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setOngoing(true)
-
-        if (tracing) {
-            builder.setSubText("# $count")
-        }
-
-        return builder.build()
     }
 }

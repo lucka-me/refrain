@@ -15,6 +15,10 @@ object Keys {
         val Distance = floatPreferencesKey("preference.interval.distance")
     }
 
+    object Notification {
+        val NotifyWhenGnssStops = booleanPreferencesKey("preference.notification.notifyWhenGnssStops")
+    }
+
     object OutputFormat {
         val CSV = booleanPreferencesKey("preference.outputFormat.csv")
         val GPX = booleanPreferencesKey("preference.outputFormat.gpx")
