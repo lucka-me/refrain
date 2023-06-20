@@ -31,7 +31,8 @@
 
         <service
             android:name=".service.TraceService"
-            android:foregroundServiceType="location" />
+            android:foregroundServiceType="location"
+            android:stopWithTask="false"/>
     </application>
 
 </manifest>
