@@ -1,4 +1,4 @@
-package labs.lucka.refrain.ui.card
+package labs.lucka.refrain.ui.content.main
 
 import android.location.Location
 import androidx.compose.foundation.layout.Arrangement
@@ -12,21 +12,22 @@ import androidx.compose.material.icons.filled.LocationSearching
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Speed
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import labs.lucka.refrain.R
-import labs.lucka.refrain.ui.compose.ExpandableCard
-import labs.lucka.refrain.ui.compose.Label
+import labs.lucka.refrain.ui.content.compose.ExpandableCard
+import labs.lucka.refrain.ui.content.compose.Label
+import labs.lucka.refrain.ui.content.main.compose.Constants
 
 @Composable
 fun LatestLocationCard(count: UInt, location: Location?) {
     if (location == null) {
-        Card {
+        OutlinedCard {
             Column(
                 modifier = Modifier
                     .padding(all = Constants.CardPadding)

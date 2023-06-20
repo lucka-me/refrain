@@ -10,7 +10,6 @@ import androidx.compose.material.icons.filled.Dangerous
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -19,17 +18,15 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import labs.lucka.refrain.R
 import labs.lucka.refrain.common.preferences.Keys
-import labs.lucka.refrain.ui.RefrainModel
-import labs.lucka.refrain.ui.card.*
-import labs.lucka.refrain.ui.compose.Label
-import labs.lucka.refrain.ui.compose.rememberPreference
+import labs.lucka.refrain.ui.LocalRefrainModel
+import labs.lucka.refrain.ui.content.compose.Label
+import labs.lucka.refrain.ui.content.compose.rememberPreference
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
-fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
-    val context = LocalContext.current
-    val locationManager = model.locationManager
-    if (locationManager == null) {
+fun MainContents(contentPadding: PaddingValues) {
+    val model = LocalRefrainModel.current
+    if (model.locationManager == null) {
         Label(
             stringResource(R.string.location_service_not_supported),
             Icons.Filled.Dangerous,
@@ -38,11 +35,7 @@ fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
         return
     }
     val outputPath by rememberPreference(Keys.OutputPath, "")
-    val locationPermissionState = rememberPermissionState(
-        android.Manifest.permission.ACCESS_FINE_LOCATION
-    ) { granted ->
-        if (granted) model.onLocationPermissionGranted(context)
-    }
+    val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
     LazyColumn(
         contentPadding = PaddingValues(
             start = contentPadding.calculateStartPadding(LocalLayoutDirection.current) + 12.dp,
@@ -69,17 +62,8 @@ fun MainContents(model: RefrainModel, contentPadding: PaddingValues) {
                 item { LatestLocationCard(model.count, model.latestLocation) }
                 item { SatellitesCard(model.latestGnssStatus) }
             }
-            item {
-                ProviderCard(locationManager.allProviders, !model.tracing) { provider ->
-                    locationManager.isProviderEnabled(provider)
-                }
-            }
             item { OutputFormatCard(!model.tracing) }
-            item { FilterCard(!model.tracing) }
-            item { IntervalsCard(!model.tracing) }
-            item { SplitCard(!model.tracing) }
             item { OutputPathCard(!model.tracing) }
-            item { PowerCard(!model.tracing) }
         }
 
         if (model.ignoringBatteryOptimization == false) {

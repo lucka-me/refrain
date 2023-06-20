@@ -1,4 +1,4 @@
-package labs.lucka.refrain.ui.compose
+package labs.lucka.refrain.ui.content.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState

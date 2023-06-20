@@ -9,12 +9,12 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.IBinder
 import android.os.PowerManager
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.getSystemService
 import androidx.core.location.GnssStatusCompat
-import androidx.core.location.LocationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
@@ -40,25 +40,26 @@ class RefrainModel : ViewModel() {
 
     fun onCreate(context: Context) {
         locationManager = context.getSystemService()
-        engageService(context)
-    }
-
-    fun onLocationPermissionGranted(context: Context) {
-        engageGnssUpdate(context)
     }
 
     fun onPause(context: Context) {
-        disengageService(context)
-        if (updatingGnssStatus) {
-            val currentLocationManager = locationManager ?: return
-            LocationManagerCompat.unregisterGnssStatusCallback(currentLocationManager, gnssStatusCallback)
-            updatingGnssStatus = false
+        if (serviceBound) {
+            context.unbindService(serviceConnection)
+            serviceBound = false
+        }
+
+        if(!tracing) {
+            context.stopService(serviceIntent)
         }
     }
 
     fun onResume(context: Context) {
-        engageService(context)
-        engageGnssUpdate(context)
+        serviceIntent = Intent(context, TraceService::class.java)
+        context.startForegroundService(serviceIntent)
+        serviceBound = context.bindService(
+            serviceIntent, serviceConnection, Service.BIND_AUTO_CREATE
+        )
+
         ignoringBatteryOptimization =
             context.getSystemService<PowerManager>()?.isIgnoringBatteryOptimizations(context.packageName)
     }
@@ -76,16 +77,6 @@ class RefrainModel : ViewModel() {
     private var serviceBinder: TraceService.TraceBinder? = null
     private var serviceBound = false
     private var serviceIntent: Intent? = null
-    private var updatingGnssStatus = false
-
-    private val gnssStatusCallback = object: GnssStatusCompat.Callback() {
-        override fun onSatelliteStatusChanged(status: GnssStatusCompat) {
-            super.onSatelliteStatusChanged(status)
-            if (status.satelliteCount > 0) {
-                latestGnssStatus = status
-            }
-        }
-    }
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -105,6 +96,10 @@ class RefrainModel : ViewModel() {
     }
 
     private val traceListener = object : TraceService.TraceListener {
+        override fun onGnssStatusUpdated(status: GnssStatusCompat) {
+            latestGnssStatus = status
+        }
+
         override fun onLocationUpdated(count: UInt, location: Location) {
             this@RefrainModel.count = count
             latestLocation = location
@@ -120,36 +115,6 @@ class RefrainModel : ViewModel() {
             latestLocation = null
         }
     }
-
-    private fun disengageService(context: Context) {
-        if (serviceBound) {
-            context.unbindService(serviceConnection)
-            serviceBound = false
-        }
-
-        if(!tracing) {
-            context.stopService(serviceIntent)
-        }
-    }
-
-    private fun engageService(context: Context) {
-        serviceIntent = Intent(context, TraceService::class.java)
-        context.startForegroundService(serviceIntent)
-        serviceBound = context.bindService(
-            serviceIntent, serviceConnection, Service.BIND_AUTO_CREATE
-        )
-    }
-
-    private fun engageGnssUpdate(context: Context) {
-        if (updatingGnssStatus) return
-        val currentLocationManager = locationManager ?: return
-        try {
-            LocationManagerCompat.registerGnssStatusCallback(
-                currentLocationManager, context.mainExecutor, gnssStatusCallback
-            )
-        } catch (e: SecurityException) {
-            return
-        }
-        updatingGnssStatus = true
-    }
 }
+
+val LocalRefrainModel = compositionLocalOf<RefrainModel> { error("The view model is missing") }

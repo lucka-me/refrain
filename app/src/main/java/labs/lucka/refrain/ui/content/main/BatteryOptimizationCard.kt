@@ -1,4 +1,4 @@
-package labs.lucka.refrain.ui.card
+package labs.lucka.refrain.ui.content.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BatterySaver
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -19,11 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import labs.lucka.refrain.R
-import labs.lucka.refrain.ui.compose.Label
+import labs.lucka.refrain.ui.content.compose.Label
+import labs.lucka.refrain.ui.content.main.compose.Constants
 
 @Composable
 fun BatteryOptimizationCard() {
-    Card {
+    OutlinedCard {
         Column(
             modifier = Modifier
                 .padding(all = Constants.CardPadding)

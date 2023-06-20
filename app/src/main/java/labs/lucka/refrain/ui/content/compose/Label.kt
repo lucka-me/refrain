@@ -1,4 +1,4 @@
-package labs.lucka.refrain.ui.compose
+package labs.lucka.refrain.ui.content.compose
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

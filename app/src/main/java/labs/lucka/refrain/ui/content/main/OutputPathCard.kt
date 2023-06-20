@@ -1,4 +1,4 @@
-package labs.lucka.refrain.ui.card
+package labs.lucka.refrain.ui.content.main
 
 import android.content.Intent
 import android.net.Uri
@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -24,8 +24,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.documentfile.provider.DocumentFile
 import labs.lucka.refrain.R
 import labs.lucka.refrain.common.preferences.Keys
-import labs.lucka.refrain.ui.compose.Label
-import labs.lucka.refrain.ui.compose.rememberPreference
+import labs.lucka.refrain.ui.content.compose.Label
+import labs.lucka.refrain.ui.content.compose.rememberPreference
+import labs.lucka.refrain.ui.content.main.compose.Constants
 import java.net.URLDecoder
 
 @Composable
@@ -39,7 +40,7 @@ fun OutputPathCard(mutable: Boolean) {
         context.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         path = uri.toString()
     }
-    Card {
+    OutlinedCard {
         Column(
             modifier = Modifier
                 .padding(all = Constants.CardPadding)

@@ -1,4 +1,4 @@
-package labs.lucka.refrain.ui.card
+package labs.lucka.refrain.ui.content.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,11 +9,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,16 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import labs.lucka.refrain.R
+import labs.lucka.refrain.ui.content.main.compose.Constants
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun TracingStatusCard(tracing: Boolean, onToggle: () -> Unit) {
-    val cardColors = if (tracing) {
-        CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-    } else {
-        CardDefaults.cardColors()
-    }
-    Card(onClick = onToggle, colors = cardColors) {
+    OutlinedCard(onClick = onToggle) {
         Column(modifier = Modifier.padding(all = Constants.CardPadding)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),

@@ -1,21 +1,10 @@
-package labs.lucka.refrain.ui.compose
+package labs.lucka.refrain.ui.content.settings.compose
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -24,12 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import labs.lucka.refrain.R
@@ -38,38 +22,17 @@ import labs.lucka.refrain.R
 fun <T> EditWithDialogField(
     title: String,
     value: T,
-    mutable: Boolean,
-    description: String,
-    imageVector: ImageVector,
-    imageDescription: String,
-    labelText: String,
-    keyboardType: KeyboardType,
     parser: (String) -> T?,
+    enabled: Boolean = true,
+    editorDescription: String? = null,
+    editorLabelText: String? = null,
+    keyboardType: KeyboardType = KeyboardType.Text,
     onValueSet: (T) -> Unit,
 ) {
     var showingDialog: Boolean by remember { mutableStateOf(false) }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(enabled = mutable, role = Role.Button) { showingDialog = true },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Label(
-            text = title,
-            imageVector = imageVector,
-            imageDescription = imageDescription,
-            style = MaterialTheme.typography.titleMedium
-        )
-        Spacer(modifier = Modifier.weight(1F))
-        Text(text = value.toString())
-        IconButton(onClick = { showingDialog = true }, enabled = mutable) {
-            Icon(
-                Icons.Filled.Edit,
-                stringResource(R.string.edit),
-                modifier = Modifier.size(with(LocalDensity.current) { LocalTextStyle.current.fontSize.toDp() })
-            )
-        }
-    }
+
+    ClickableItem(title, description = value.toString(), enabled = enabled) { showingDialog = true }
+
     if (showingDialog) {
         var valueText by remember { mutableStateOf(value.toString()) }
         var valid: Boolean by remember { mutableStateOf(true) }
@@ -89,18 +52,19 @@ fun <T> EditWithDialogField(
                     Text(stringResource(R.string.confirm))
                 }
             },
-            icon = { Icon(imageVector, imageDescription) },
             title = { Text(title) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(description)
+                    if (editorDescription != null) {
+                        Text(editorDescription)
+                    }
                     TextField(
                         value = valueText,
                         onValueChange = {
                             valueText = it
                             valid = parser(valueText) != null
                         },
-                        label = { Text(labelText) },
+                        label = if (editorLabelText != null) { { Text(editorLabelText) } } else null,
                         isError = !valid,
                         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
                         keyboardActions = KeyboardActions(onDone = {

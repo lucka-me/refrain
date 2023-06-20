@@ -8,11 +8,16 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 object Keys {
     object Filter {
         val Accuracy = floatPreferencesKey("preference.filter.accuracy")
+        val IgnoreDuplicated = booleanPreferencesKey("preference.filter.ignoreDuplicated")
     }
 
     object Interval {
         val Time = longPreferencesKey("preference.interval.time")
         val Distance = floatPreferencesKey("preference.interval.distance")
+    }
+
+    object Notification {
+        val NotifyWhenGnssStops = booleanPreferencesKey("preference.notification.notifyWhenGnssStops")
     }
 
     object OutputFormat {
@@ -22,6 +27,7 @@ object Keys {
     }
 
     object Power {
+        val KeepScreenOn = booleanPreferencesKey("preference.power.keepScreenOn")
         val WakeLock = booleanPreferencesKey("preference.power.wakeLock")
     }
 

@@ -1,4 +1,4 @@
-package labs.lucka.refrain.ui.card
+package labs.lucka.refrain.ui.content.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -6,19 +6,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import labs.lucka.refrain.R
-import labs.lucka.refrain.ui.compose.Label
+import labs.lucka.refrain.ui.content.compose.Label
+import labs.lucka.refrain.ui.content.main.compose.Constants
 
 @Composable
 fun LocationPermissionCard(onRequest: () -> Unit) {
-    Card {
+    OutlinedCard {
         Column(
             modifier = Modifier
                 .padding(all = Constants.CardPadding)

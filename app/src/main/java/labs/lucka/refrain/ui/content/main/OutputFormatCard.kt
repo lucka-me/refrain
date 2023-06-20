@@ -1,4 +1,4 @@
-package labs.lucka.refrain.ui.card
+package labs.lucka.refrain.ui.content.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,8 +19,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import labs.lucka.refrain.R
 import labs.lucka.refrain.common.preferences.Keys
-import labs.lucka.refrain.ui.compose.ExpandableCard
-import labs.lucka.refrain.ui.compose.rememberPreference
+import labs.lucka.refrain.ui.content.compose.ExpandableCard
+import labs.lucka.refrain.ui.content.compose.rememberPreference
 
 @Composable
 fun OutputFormatCard(mutable: Boolean) {

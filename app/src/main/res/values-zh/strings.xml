@@ -21,19 +21,6 @@
     <string name="battery_optimization_configure">配置电池优化策略</string>
     <string name="battery_optimization_description">非常建议为Refrain配置忽略电池优化。</string>
 
-    <string name="filter">筛选</string>
-    <string name="filter_accuracy">精度</string>
-    <string name="filter_accuracy_alt">精度筛选</string>
-    <string name="filter_accuracy_description">设置最低精度，0为无限制。</string>
-
-    <string name="interval">间隔</string>
-    <string name="interval_time">时间</string>
-    <string name="interval_time_alt">时间间隔</string>
-    <string name="interval_time_description">设置最小时间间隔。</string>
-    <string name="interval_distance">距离</string>
-    <string name="interval_distance_alt">距离间隔</string>
-    <string name="interval_distance_description">设置最小距离间隔。</string>
-
     <string name="last_location">最新位置</string>
     <string name="last_location_locating">正在定位…</string>
     <string name="last_location_locating_alt">正在定位</string>
@@ -56,21 +43,6 @@
     <string name="output_path_select">选择</string>
     <string name="output_path_change">更改</string>
 
-    <string name="power">电源</string>
-    <string name="power_enable_wake_lock">开启唤醒锁定</string>
-    <string name="power_enable_wake_lock_description">一些设备可能会在锁屏一段时间（例如1小时）后停止更新定位以延长电池寿命。
-        唤醒锁定能够使处理器在锁屏时保持活跃状态，但可能对电池寿命有较大影响。</string>
-
-    <string name="provider">来源</string>
-    <string name="provider_by">来源：%1$s</string>
-    <string name="provider_alt">位置来源</string>
-    <string name="provider_undefined">未定义（%1$s）</string>
-    <string name="provider_gps">卫星</string>
-    <string name="provider_fused">融合</string>
-    <string name="provider_network">网络基站</string>
-    <string name="provider_passive">被动</string>
-    <string name="provider_disabled">已禁用</string>
-
     <string name="satellites">卫星</string>
     <string name="satellites_fixing">正在解算…</string>
     <string name="satellites_fixing_alt">正在解算</string>
@@ -85,22 +57,57 @@
     <string name="satellites_unknown">未知</string>
     <string name="satellites_count_description">%1$s的卫星数量</string>
 
-    <string name="split_card_title">打断</string>
-    <string name="split_card_time">时间</string>
-    <string name="split_card_time_alt">时间间隔</string>
-    <string name="split_card_time_description">如果两个定位的时间间隔超过此值就打断轨迹。</string>
-    <string name="split_card_distance">距离</string>
-    <string name="split_card_distance_alt">距离间隔</string>
-    <string name="split_card_distance_description">如果两个定位的距离间隔超过此值就打断轨迹。</string>
-
     <string name="tracing_status_tracing">正在追踪</string>
     <string name="tracing_status_ready">就绪</string>
+
+    <!--Settings-->
+
+    <string name="settings_filter">筛选</string>
+    <string name="settings_filter_accuracy">精度</string>
+    <string name="settings_filter_accuracy_description">设置最低精度，0为无限制。</string>
+    <string name="settings_filter_ignore_duplicated">忽略重复</string>
+    <string name="settings_filter_ignore_duplicated_description">忽略与前一个位置的坐标和精度相同的位置。</string>
+
+    <string name="settings_interval">间隔</string>
+    <string name="settings_interval_time">时间</string>
+    <string name="settings_interval_time_description">两个定位之间的最小时间间隔。</string>
+    <string name="settings_interval_distance">距离</string>
+    <string name="settings_interval_distance_description">两个定位之间的最小距离间隔。</string>
+
+    <string name="settings_notification">通知</string>
+    <string name="settings_notification_send_when_gnss_stops">GNSS系统停止</string>
+    <string name="settings_notification_send_when_gnss_stops_description">锁屏一段时间后GNSS系统可能会停止，您可能需要解锁设备以激活GNSS系统。</string>
+    <string name="settings_notification_request_permission">请求权限</string>
+    <string name="settings_notification_request_permission_description">Refrain需要权限以发送通知。</string>
+
+    <string name="settings_power">电源</string>
+    <string name="settings_power_enable_wake_lock">开启唤醒锁定</string>
+    <string name="settings_power_enable_wake_lock_description">一些设备可能会在锁屏一段时间后停止更新定位以延长电池寿命。
+        唤醒锁定能够使处理器在锁屏时保持活跃状态。</string>
+    <string name="settings_power_enable_keep_screen_on">保持屏幕开启</string>
+
+    <string name="settings_providers">来源</string>
+    <string name="settings_providers_undefined">未定义（%1$s）</string>
+    <string name="settings_providers_gps">卫星</string>
+    <string name="settings_providers_fused">融合</string>
+    <string name="settings_providers_network">网络基站</string>
+    <string name="settings_providers_passive">被动</string>
+    <string name="settings_providers_disabled_suffix">（已禁用）</string>
+
+    <string name="settings_split">打断</string>
+    <string name="settings_split_time">时间</string>
+    <string name="settings_split_time_description">如果两个定位的时间间隔超过此值就打断轨迹。</string>
+    <string name="settings_split_distance">距离</string>
+    <string name="settings_split_distance_description">如果两个定位的距离间隔超过此值就打断轨迹。</string>
 
     <!-- About -->
     <string name="source_code">源代码</string>
 
     <!-- Service -->
     <string name="service_foreground_channel_description">Refrain追踪服务前台通知</string>
-    <string name="service_notification_tracing">追踪服务正在运行。</string>
-    <string name="service_notification_standby">追踪服务就绪。</string>
+    <string name="service_notification_service_tracing">追踪服务正在运行。</string>
+    <string name="service_notification_service_standby">追踪服务就绪。</string>
+
+    <string name="service_notification_gnss_stops_title">GNSS系统已停止</string>
+    <string name="service_notification_gnss_stops_content">您可能需要解锁设备以激活GNSS系统。</string>
 </resources>
