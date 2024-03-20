@@ -35,3 +35,36 @@ fun <T> rememberPreference(key: Preferences.Key<T>, defaultValue: T): MutableSta
         }
     }
 }
+
+@Composable
+inline fun <reified T: Enum<T>> rememberPreference(key: Preferences.Key<Int>, defaultValue: T): MutableState<T> {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val state = remember { context.preferencesDataStore.data.map { it[key] ?: defaultValue.ordinal } }
+        .collectAsState(initial = defaultValue.ordinal)
+    return remember {
+        object : MutableState<T> {
+            override var value: T
+                get() {
+                    if (state.value < 0) {
+                        return defaultValue
+                    }
+                    val values = enumValues<T>()
+                    if (state.value >= values.size) {
+                        return defaultValue
+                    }
+                    return values[state.value]
+                }
+                set(value) {
+                    scope.launch {
+                        context.preferencesDataStore.edit {
+                            it[key] = value.ordinal
+                        }
+                    }
+                }
+
+            override fun component1() = value
+            override fun component2(): (T) -> Unit = { value = it }
+        }
+    }
+}

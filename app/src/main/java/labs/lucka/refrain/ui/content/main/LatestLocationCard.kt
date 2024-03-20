@@ -4,6 +4,7 @@ import android.icu.text.MeasureFormat
 import android.icu.util.Measure
 import android.icu.util.MeasureUnit
 import android.location.Location
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,12 +20,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import labs.lucka.refrain.R
+import labs.lucka.refrain.common.measure.DistanceMeasureUnit
+import labs.lucka.refrain.common.measure.SpeedMeasureUnit
+import labs.lucka.refrain.common.next
+import labs.lucka.refrain.common.preferences.Keys
 import labs.lucka.refrain.ui.content.compose.ExpandableCard
 import labs.lucka.refrain.ui.content.compose.Label
+import labs.lucka.refrain.ui.content.compose.getCurrentLocale
+import labs.lucka.refrain.ui.content.compose.rememberPreference
 import labs.lucka.refrain.ui.content.main.compose.Constants
 
 @Composable
@@ -69,8 +78,18 @@ fun LatestLocationCard(count: UInt, location: Location?) {
             }
             if (location.hasSpeed()) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    var speedDisplayFormat by rememberPreference(
+                        Keys.DisplayMeasureUnit.Speed, SpeedMeasureUnit.METER_PER_SECOND
+                    )
                     Label(stringResource(R.string.last_location_speed), Icons.Filled.Speed)
-                    Text(text = "${location.speed} m/s")
+                    Text(
+                        text = measureFormat.formatMeasures(
+                            Measure(speedDisplayFormat.convert(location.speed), speedDisplayFormat.measureUnit)
+                        ),
+                        modifier = Modifier.clickable {
+                            speedDisplayFormat = speedDisplayFormat.next()
+                        }
+                    )
                 }
             }
         }
