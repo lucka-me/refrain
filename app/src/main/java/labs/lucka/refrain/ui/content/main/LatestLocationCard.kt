@@ -1,5 +1,8 @@
 package labs.lucka.refrain.ui.content.main
 
+import android.icu.text.MeasureFormat
+import android.icu.util.Measure
+import android.icu.util.MeasureUnit
 import android.location.Location
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -56,10 +59,12 @@ fun LatestLocationCard(count: UInt, location: Location?) {
                 }
             }
         ) {
+            val locale = getCurrentLocale()
+            val measureFormat = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.NARROW)
             if (location.hasAccuracy()) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Label(stringResource(R.string.accuracy), Icons.Filled.Adjust)
-                    Text(text = "${location.accuracy} m")
+                    Text(text = measureFormat.formatMeasures(Measure(location.accuracy, MeasureUnit.METER)))
                 }
             }
             if (location.hasSpeed()) {
