@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.InsertDriveFile
+import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,7 +30,7 @@ fun OutputFormatCard(mutable: Boolean) {
 
     ExpandableCard(
         stringResource(R.string.output_format),
-        Icons.Filled.InsertDriveFile,
+        Icons.AutoMirrored.Filled.InsertDriveFile,
         stringResource(R.string.output_format_alt)
     ) {
         FormatField(R.string.output_format_csv, enableCSV, mutable) { enableCSV = !enableCSV }
