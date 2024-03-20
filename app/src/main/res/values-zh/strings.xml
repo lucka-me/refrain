@@ -25,6 +25,7 @@
     <string name="last_location_locating">正在定位…</string>
     <string name="last_location_locating_alt">正在定位</string>
     <string name="last_location_coordinate">坐标</string>
+    <string name="last_location_time">时间</string>
     <string name="last_location_speed">速度</string>
     <string name="last_location_total_distance">总距离</string>
 

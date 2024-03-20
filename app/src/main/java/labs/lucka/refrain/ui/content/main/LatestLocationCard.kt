@@ -36,6 +36,10 @@ import labs.lucka.refrain.ui.content.compose.Label
 import labs.lucka.refrain.ui.content.compose.getCurrentLocale
 import labs.lucka.refrain.ui.content.compose.rememberPreference
 import labs.lucka.refrain.ui.content.main.compose.Constants
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Composable
 fun LatestLocationCard(location: Location?, count: UInt, totalDistance: Float) {
@@ -70,6 +74,14 @@ fun LatestLocationCard(location: Location?, count: UInt, totalDistance: Float) {
             }
         ) {
             val locale = getCurrentLocale()
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                val dateTimeFormat = DateTimeFormatter
+                    .ofLocalizedDateTime(FormatStyle.MEDIUM)
+                    .withLocale(locale)
+                    .withZone(ZoneId.systemDefault())
+                Label(stringResource(R.string.last_location_time), Icons.Filled.Adjust)
+                Text(text = dateTimeFormat.format(Instant.ofEpochMilli(location.time)))
+            }
             val measureFormat = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.NARROW)
             if (location.hasAccuracy()) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

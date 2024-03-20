@@ -24,6 +24,7 @@
     <string name="last_location_locating">Locating…</string>
     <string name="last_location_locating_alt">Locating</string>
     <string name="last_location_coordinate">Coordinate</string>
+    <string name="last_location_time">Time</string>
     <string name="last_location_speed">Speed</string>
     <string name="last_location_total_distance">Total Distance</string>
 
