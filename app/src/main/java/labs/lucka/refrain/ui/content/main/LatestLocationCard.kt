@@ -1,6 +1,10 @@
 package labs.lucka.refrain.ui.content.main
 
+import android.icu.text.MeasureFormat
+import android.icu.util.Measure
+import android.icu.util.MeasureUnit
 import android.location.Location
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,20 +16,33 @@ import androidx.compose.material.icons.filled.LocationSearching
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import labs.lucka.refrain.R
+import labs.lucka.refrain.common.measure.DistanceMeasureUnit
+import labs.lucka.refrain.common.measure.SpeedMeasureUnit
+import labs.lucka.refrain.common.next
+import labs.lucka.refrain.common.preferences.Keys
 import labs.lucka.refrain.ui.content.compose.ExpandableCard
 import labs.lucka.refrain.ui.content.compose.Label
+import labs.lucka.refrain.ui.content.compose.getCurrentLocale
+import labs.lucka.refrain.ui.content.compose.rememberPreference
 import labs.lucka.refrain.ui.content.main.compose.Constants
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Composable
-fun LatestLocationCard(count: UInt, location: Location?) {
+fun LatestLocationCard(location: Location?, count: UInt, totalDistance: Float) {
     if (location == null) {
         OutlinedCard {
             Column(
@@ -56,17 +73,51 @@ fun LatestLocationCard(count: UInt, location: Location?) {
                 }
             }
         ) {
+            val locale = getCurrentLocale()
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                val dateTimeFormat = DateTimeFormatter
+                    .ofLocalizedDateTime(FormatStyle.MEDIUM)
+                    .withLocale(locale)
+                    .withZone(ZoneId.systemDefault())
+                Label(stringResource(R.string.last_location_time), Icons.Filled.Adjust)
+                Text(text = dateTimeFormat.format(Instant.ofEpochMilli(location.time)))
+            }
+            val measureFormat = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.NARROW)
             if (location.hasAccuracy()) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Label(stringResource(R.string.accuracy), Icons.Filled.Adjust)
-                    Text(text = "${location.accuracy} m")
+                    Text(text = measureFormat.formatMeasures(Measure(location.accuracy, MeasureUnit.METER)))
                 }
             }
             if (location.hasSpeed()) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    var speedDisplayFormat by rememberPreference(
+                        Keys.DisplayMeasureUnit.Speed, SpeedMeasureUnit.METER_PER_SECOND
+                    )
                     Label(stringResource(R.string.last_location_speed), Icons.Filled.Speed)
-                    Text(text = "${location.speed} m/s")
+                    Text(
+                        text = measureFormat.formatMeasures(
+                            Measure(speedDisplayFormat.convert(location.speed), speedDisplayFormat.measureUnit)
+                        ),
+                        modifier = Modifier.clickable {
+                            speedDisplayFormat = speedDisplayFormat.next()
+                        }
+                    )
                 }
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                var distanceUnit by rememberPreference(
+                    Keys.DisplayMeasureUnit.Distance, DistanceMeasureUnit.METER
+                )
+                Label(stringResource(R.string.last_location_total_distance), Icons.Filled.Straighten)
+                Text(
+                    text = measureFormat.formatMeasures(
+                        Measure(distanceUnit.convert(totalDistance), distanceUnit.measureUnit)
+                    ),
+                    modifier = Modifier.clickable {
+                        distanceUnit = distanceUnit.next()
+                    }
+                )
             }
         }
     }

@@ -24,7 +24,9 @@
     <string name="last_location_locating">Locating…</string>
     <string name="last_location_locating_alt">Locating</string>
     <string name="last_location_coordinate">Coordinate</string>
+    <string name="last_location_time">Time</string>
     <string name="last_location_speed">Speed</string>
+    <string name="last_location_total_distance">Total Distance</string>
 
     <string name="location_permission">Location Permission</string>
     <string name="location_permission_description">Refrain requires the permission to access high accuracy locations.</string>

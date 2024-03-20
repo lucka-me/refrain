@@ -2,10 +2,16 @@ package labs.lucka.refrain.common.preferences
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 
 object Keys {
+    object DisplayMeasureUnit {
+        val Distance = intPreferencesKey("preference.displayFormat.distance")
+        val Speed = intPreferencesKey("preference.displayFormat.speed")
+    }
+
     object Filter {
         val Accuracy = floatPreferencesKey("preference.filter.accuracy")
         val IgnoreDuplicated = booleanPreferencesKey("preference.filter.ignoreDuplicated")

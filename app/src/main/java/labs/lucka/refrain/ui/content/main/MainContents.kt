@@ -59,7 +59,7 @@ fun MainContents(contentPadding: PaddingValues) {
         if (locationPermissionState.status == PermissionStatus.Granted && outputPath.isNotEmpty()) {
             item { TracingStatusCard(model.tracing) { model.toggle() } }
             if (model.tracing) {
-                item { LatestLocationCard(model.count, model.latestLocation) }
+                item { LatestLocationCard(model.latestLocation, model.count, model.totalDistance) }
                 item { SatellitesCard(model.latestGnssStatus) }
             }
             item { OutputFormatCard(!model.tracing) }

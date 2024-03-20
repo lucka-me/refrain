@@ -25,7 +25,9 @@
     <string name="last_location_locating">正在定位…</string>
     <string name="last_location_locating_alt">正在定位</string>
     <string name="last_location_coordinate">坐标</string>
+    <string name="last_location_time">时间</string>
     <string name="last_location_speed">速度</string>
+    <string name="last_location_total_distance">总距离</string>
 
     <string name="location_permission">定位权限</string>
     <string name="location_permission_description">Refrain需要访问高精度定位的权限。</string>
