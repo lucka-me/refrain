@@ -59,7 +59,8 @@ class RefrainModel : ViewModel() {
     }
 
     fun onResume(context: Context) {
-        serviceIntent = Intent(context, TraceService::class.java)
+        val serviceIntent = Intent(context, TraceService::class.java)
+        this.serviceIntent = serviceIntent
         context.startForegroundService(serviceIntent)
         serviceBound = context.bindService(
             serviceIntent, serviceConnection, Service.BIND_AUTO_CREATE
