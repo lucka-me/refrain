@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 
 object Keys {
     object DisplayMeasureUnit {
+        val Distance = intPreferencesKey("preference.displayFormat.distance")
         val Speed = intPreferencesKey("preference.displayFormat.speed")
     }
 

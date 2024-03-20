@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.LocationSearching
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -37,7 +38,7 @@ import labs.lucka.refrain.ui.content.compose.rememberPreference
 import labs.lucka.refrain.ui.content.main.compose.Constants
 
 @Composable
-fun LatestLocationCard(count: UInt, location: Location?) {
+fun LatestLocationCard(location: Location?, count: UInt, totalDistance: Float) {
     if (location == null) {
         OutlinedCard {
             Column(
@@ -91,6 +92,20 @@ fun LatestLocationCard(count: UInt, location: Location?) {
                         }
                     )
                 }
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                var distanceUnit by rememberPreference(
+                    Keys.DisplayMeasureUnit.Distance, DistanceMeasureUnit.METER
+                )
+                Label(stringResource(R.string.last_location_total_distance), Icons.Filled.Straighten)
+                Text(
+                    text = measureFormat.formatMeasures(
+                        Measure(distanceUnit.convert(totalDistance), distanceUnit.measureUnit)
+                    ),
+                    modifier = Modifier.clickable {
+                        distanceUnit = distanceUnit.next()
+                    }
+                )
             }
         }
     }

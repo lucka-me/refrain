@@ -11,6 +11,7 @@ import android.os.IBinder
 import android.os.PowerManager
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.getSystemService
@@ -24,6 +25,10 @@ class RefrainModel : ViewModel() {
 
     var count: UInt by mutableStateOf(0U)
         private set
+
+    var totalDistance: Float by mutableFloatStateOf(0.0F)
+        private set
+
     var ignoringBatteryOptimization: Boolean? by mutableStateOf(null)
         private set
     var latestGnssStatus: GnssStatusCompat? by mutableStateOf(null)
@@ -102,6 +107,10 @@ class RefrainModel : ViewModel() {
 
         override fun onLocationUpdated(count: UInt, location: Location) {
             this@RefrainModel.count = count
+            val currentLatestLocation = latestLocation
+            if (currentLatestLocation != null) {
+                totalDistance += currentLatestLocation.distanceTo(location)
+            }
             latestLocation = location
         }
 
@@ -112,6 +121,7 @@ class RefrainModel : ViewModel() {
         override fun onStop() {
             tracing = false
             count = 0U
+            totalDistance = 0.0F
             latestLocation = null
         }
     }
